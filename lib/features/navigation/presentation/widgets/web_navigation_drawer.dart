@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 class WebNavigationDrawer extends StatelessWidget {
@@ -19,14 +20,15 @@ class WebNavigationDrawer extends StatelessWidget {
       selectedIndex: selectedIndex,
       children: [
         if (header != null) header!,
-        const NavigationDrawerDestination(
-            icon: Icon(Icons.home), label: Text('Home')),
-        const NavigationDrawerDestination(
-            icon: Icon(Icons.search), label: Text('Search')),
-        const NavigationDrawerDestination(
-            icon: Icon(Icons.message), label: Text('Messages')),
-        const NavigationDrawerDestination(
-            icon: Icon(Icons.account_circle), label: Text('Account')),
+        NavigationDrawerDestination(
+            icon: const Icon(Icons.home), label: Text('home'.tr())),
+        NavigationDrawerDestination(
+            icon: const Icon(Icons.search), label: Text('search'.tr())),
+        NavigationDrawerDestination(
+            icon: const Icon(Icons.message), label: Text('messages'.tr())),
+        NavigationDrawerDestination(
+            icon: const Icon(Icons.account_circle),
+            label: Text('account'.tr())),
       ],
     );
   }

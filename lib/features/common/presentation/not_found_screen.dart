@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -14,16 +15,16 @@ class NotFoundScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text(
-              "Page Not Found",
+              "page_not_found".tr(),
               style: Theme.of(context).textTheme.titleLarge,
             ),
             Text(
-              "Oops! The page you are looking for doesn't exist.",
+              'page_not_found_subtitle'.tr(),
               style: Theme.of(context).textTheme.bodyLarge,
             ),
             ElevatedButton(
               onPressed: () => context.go(Routes.home.path),
-              child: const Text('Go to Home Page'),
+              child: Text('go_home'.tr()),
             ),
           ],
         ),

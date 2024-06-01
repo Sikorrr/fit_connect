@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 import '../../../core/app_state.dart';
@@ -10,17 +11,11 @@ class LoginScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         body: Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const Text('Login Screen'),
-          TextButton(
-              onPressed: () {
-                getIt<AuthState>().setLogin(true);
-              },
-              child: const Text("Log in"))
-        ],
-      ),
+      child: TextButton(
+          onPressed: () {
+            getIt<AuthState>().setLogin(true);
+          },
+          child: Text('login'.tr())),
     ));
   }
 }

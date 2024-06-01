@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 class MobileNavigationBar extends StatelessWidget {
@@ -15,12 +16,13 @@ class MobileNavigationBar extends StatelessWidget {
     return NavigationBar(
       selectedIndex: selectedIndex,
       onDestinationSelected: onDestinationSelected,
-      destinations: const [
-        NavigationDestination(icon: Icon(Icons.home), label: 'Home'),
-        NavigationDestination(icon: Icon(Icons.search), label: 'Search'),
-        NavigationDestination(icon: Icon(Icons.message), label: 'Messages'),
+      destinations: [
+        NavigationDestination(icon: const Icon(Icons.home), label: 'home'.tr()),
+        NavigationDestination(icon: const Icon(Icons.search), label: 'search'.tr()),
         NavigationDestination(
-            icon: Icon(Icons.account_circle), label: 'Account'),
+            icon: const Icon(Icons.message), label: 'messages'.tr()),
+        NavigationDestination(
+            icon: const Icon(Icons.account_circle), label: 'account'.tr()),
       ],
     );
   }

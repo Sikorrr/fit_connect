@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 import '../../../core/app_state.dart';
@@ -10,16 +11,10 @@ class UserScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         body: Center(
-            child: Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        const Text('User Screen'),
-        TextButton(
-            onPressed: () {
-              getIt<AuthState>().setLogin(false);
-            },
-            child: const Text("Log out"))
-      ],
-    )));
+            child: TextButton(
+                onPressed: () {
+                  getIt<AuthState>().setLogin(false);
+                },
+                child: Text("logout".tr()))));
   }
 }
