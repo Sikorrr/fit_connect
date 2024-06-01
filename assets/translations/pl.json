@@ -1,5 +1,5 @@
 {
-  "login": "Zaloguj się",
+  "log_in": "Zaloguj się",
   "page_not_found": "Strona nie znaleziona",
   "page_not_found_subtitle": "Ups! Strona, której szukasz, nie istnieje.",
   "go_home": "Przejdź do strony głównej",
@@ -7,5 +7,13 @@
   "home": "Strona główna",
   "search": "Szukaj",
   "messages": "Wiadomości",
-  "account": "Konto"
+  "account": "Konto",
+  "email_empty": "Email nie może być pusty",
+  "email_invalid": "Podaj prawidłowy adres email",
+  "password_empty": "Hasło nie może być puste",
+  "password_short": "Hasło musi mieć co najmniej 8 znaków",
+  "create_account": "Utwórz konto",
+  "sign_up": "Zarejestruj się",
+  "email": "e-mail",
+  "password": "hasło"
 }

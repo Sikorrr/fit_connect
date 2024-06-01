@@ -18,7 +18,8 @@ class MobileNavigationBar extends StatelessWidget {
       onDestinationSelected: onDestinationSelected,
       destinations: [
         NavigationDestination(icon: const Icon(Icons.home), label: 'home'.tr()),
-        NavigationDestination(icon: const Icon(Icons.search), label: 'search'.tr()),
+        NavigationDestination(
+            icon: const Icon(Icons.search), label: 'search'.tr()),
         NavigationDestination(
             icon: const Icon(Icons.message), label: 'messages'.tr()),
         NavigationDestination(

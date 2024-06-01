@@ -1,5 +1,5 @@
 {
-  "login": "Log in",
+  "log_in": "Log in",
   "page_not_found": "Page Not Found",
   "page_not_found_subtitle": "Oops! The page you are looking for doesn't exist.",
   "go_home": "Go to Home Page",
@@ -7,5 +7,13 @@
   "home": "Home",
   "search": "Search",
   "messages": "Messages",
-  "account": "Account"
+  "account": "Account",
+  "email_empty": "Email cannot be empty",
+  "email_invalid": "Enter a valid email address",
+  "password_empty": "Password cannot be empty",
+  "password_short": "Password must be at least 8 characters long",
+  "create_account": "Create Account",
+  "sign_up": "Sign up",
+  "email": "e-mail",
+  "password": "password"
 }

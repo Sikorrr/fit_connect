@@ -6,7 +6,9 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../core/app_state.dart';
 import '../../../../core/dependency_injection.dart';
-import '../../../auth/presentation/login_screen.dart';
+import '../../../auth/data/repositories/auth_repository_impl.dart';
+import '../../../auth/presentation/bloc/auth_bloc.dart';
+import '../../../auth/presentation/screens/auth_screen.dart';
 import '../../../common/presentation/not_found_screen.dart';
 import '../../../common/presentation/placeholder_screen.dart';
 import '../../presentation/bloc/navigation_bloc.dart';
@@ -14,7 +16,7 @@ import '../../presentation/screens/tab_navigator.dart';
 
 enum Routes {
   home("/"),
-  login("/login"),
+  auth("/auth"),
   search("/search"),
   messages("/messages"),
   account("/account");
@@ -34,12 +36,12 @@ class AppRoute {
       final isLoggedIn = getIt<AuthState>().isLoggedIn;
       final path = state.uri.path;
 
-      if (isLoggedIn && path == Routes.login.path) {
+      if (isLoggedIn && path == Routes.auth.path) {
         /// Redirect to home if already logged in and accessing login page
         return Routes.home.path;
       } else if (!isLoggedIn && _isProtectedRoute(path)) {
         /// Redirect to login if not logged in and trying to access a protected route
-        return Routes.login.path;
+        return Routes.auth.path;
       }
 
       /// No redirect if the route is not defined; let it fall through to errorBuilder
@@ -48,9 +50,11 @@ class AppRoute {
     refreshListenable: getIt<AuthState>(),
     routes: [
       GoRoute(
-        path: Routes.login.path,
-        name: Routes.login.name,
-        builder: (context, state) => const LoginScreen(),
+        path: Routes.auth.path,
+        name: Routes.auth.name,
+        builder: (context, state) => BlocProvider(
+            create: (context) => AuthBloc(getIt<AuthRepositoryImpl>()),
+            child: AuthScreen()),
       ),
       ShellRoute(
         navigatorKey: _shellNavigatorKey,
