@@ -1,8 +1,8 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
-import '../../../core/app_state.dart';
 import '../../../core/dependency_injection.dart';
+import '../../auth/data/repositories/auth_repository_impl.dart';
 
 class UserScreen extends StatelessWidget {
   const UserScreen({super.key});
@@ -13,7 +13,7 @@ class UserScreen extends StatelessWidget {
         body: Center(
             child: TextButton(
                 onPressed: () {
-                  getIt<AuthState>().setLogin(false);
+                  getIt<AuthRepositoryImpl>().logOut();
                 },
                 child: Text("logout".tr()))));
   }
