@@ -33,7 +33,7 @@ class AppRoute {
     initialLocation: Routes.home.path,
     debugLogDiagnostics: true,
     redirect: (context, state) {
-      final isLoggedIn = getIt<AuthState>().isLoggedIn;
+      final isLoggedIn = getIt<AppState>().isLoggedIn;
       final path = state.uri.path;
 
       if (isLoggedIn && path == Routes.auth.path) {
@@ -47,7 +47,7 @@ class AppRoute {
       /// No redirect if the route is not defined; let it fall through to errorBuilder
       return null;
     },
-    refreshListenable: getIt<AuthState>(),
+    refreshListenable: getIt<AppState>(),
     routes: [
       GoRoute(
         path: Routes.auth.path,
@@ -85,9 +85,10 @@ class AppRoute {
           ),
           GoRoute(
             path: Routes.account.path,
-            pageBuilder: (context, state) => const NoTransitionPage(
-              child: UserScreen(),
-            ),
+            name: Routes.account.name,
+            builder: (context, state) => BlocProvider(
+                create: (context) => AuthBloc(getIt<AuthRepositoryImpl>()),
+                child: const UserScreen()),
           ),
         ],
       ),

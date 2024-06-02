@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:injectable/injectable.dart';
 
 @singleton
-class AuthState with ChangeNotifier {
+class AppState with ChangeNotifier {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   bool _isLoggedIn = false;
 
-  AuthState() {
+  AppState() {
     _firebaseAuth.authStateChanges().listen(_onAuthStateChanged);
   }
 

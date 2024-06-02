@@ -3,36 +3,69 @@ import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:injectable/injectable.dart';
 
-import '../../../../core/config/config.dart';
+import '../../../../core/api/response.dart';
+import '../../../../core/api/result_status.dart';
+import '../../../../core/error_manager.dart';
 import '../../domain/repositories/auth_repository.dart';
 
 @lazySingleton
 class AuthRepositoryImpl implements AuthRepository {
-  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
-  final GoogleSignIn _googleSignIn =
-      GoogleSignIn(clientId: googleSignInClientId);
-  final FacebookAuth _facebookAuth = FacebookAuth.instance;
+  final FirebaseAuth _firebaseAuth;
+  final GoogleSignIn _googleSignIn;
+  final FacebookAuth _facebookAuth;
+  final ErrorManager _errorManager;
+
+  AuthRepositoryImpl(
+    @Named('FirebaseAuthInstance') this._firebaseAuth,
+    @Named('GoogleSignInInstance') this._googleSignIn,
+    @Named('FacebookAuthInstance') this._facebookAuth,
+    this._errorManager,
+  );
 
   @override
-  Future<bool> login(String email, String password) async {
+  Future<Response> login(String email, String password) async {
     try {
-      await _firebaseAuth.signInWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
-      return true;
-    } on FirebaseAuthException catch (e) {
-      print(
-          'Error in login - FirebaseAuthException: ${e.message}, Code: ${e.code}');
-      return false;
-    } catch (e) {
-      print('Error in login - Exception: $e');
-      return false;
+      UserCredential userCredential = await _firebaseAuth
+          .signInWithEmailAndPassword(email: email, password: password);
+      return _evaluateUser(userCredential.user);
+    } catch (e, s) {
+      return _handleException('login_failed', e: e, s: s);
     }
   }
 
   @override
-  Future<bool> loginWithGoogle() async {
+  Future<Response> register(String email, String password) async {
+    try {
+      UserCredential userCredential = await _firebaseAuth
+          .createUserWithEmailAndPassword(email: email, password: password);
+      return _evaluateUser(userCredential.user);
+    } catch (e, s) {
+      return _handleException('register_failed', e: e, s: s);
+    }
+  }
+
+  Response _evaluateUser(User? user) {
+    if (user == null) return Response(ResultStatus.error);
+    return Response(ResultStatus.success);
+  }
+
+  Future<Response> signInWithFirebase(AuthCredential credential) async {
+    await _firebaseAuth.signInWithCredential(credential);
+    return Response(ResultStatus.success);
+  }
+
+  @override
+  Future<Response> logOut() async {
+    try {
+      await _firebaseAuth.signOut();
+      return Response(ResultStatus.success);
+    } catch (e, s) {
+      return _handleException('sign_out_error', e: e, s: s);
+    }
+  }
+
+  @override
+  Future<Response> loginWithGoogle() async {
     try {
       GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
       if (googleUser != null) {
@@ -42,104 +75,51 @@ class AuthRepositoryImpl implements AuthRepository {
           accessToken: googleAuth.accessToken,
           idToken: googleAuth.idToken,
         );
-        return await authenticateOrLinkUser(credential);
+        await authenticateOrLinkUser(credential);
+        return Response(ResultStatus.success);
       } else {
-        print("Google sign-in was aborted.");
-        return false;
+        return _handleException('google_signin_cancelled');
       }
-    } catch (e) {
-      print("Error during Google sign-in: $e");
-      return false;
+    } catch (e, s) {
+      return _handleException('google_signin_error', e: e, s: s);
     }
   }
 
   @override
-  Future<bool> register(String email, String password) async {
-    try {
-      await _firebaseAuth.createUserWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
-      return true;
-    } on FirebaseAuthException catch (e) {
-      print(
-          'Error in register - FirebaseAuthException: ${e.message}, Code: ${e.code}');
-      return false;
-    } catch (e) {
-      print('Error in register - Exception: $e');
-      return false;
-    }
-  }
-
-  @override
-  Future<bool> signInWithFirebase(AuthCredential credential) async {
-    try {
-      await _firebaseAuth.signInWithCredential(credential);
-      return true;
-    } on FirebaseAuthException catch (e) {
-      print(
-          'Error in signInWithFirebase - FirebaseAuthException: ${e.message}, Code: ${e.code}');
-      return false;
-    } catch (e) {
-      print('Error in signInWithFirebase - Exception: $e');
-      return false;
-    }
-  }
-
-  @override
-  Future<bool> logOut() async {
-    try {
-      await _firebaseAuth.signOut();
-      return true;
-    } on FirebaseAuthException catch (e) {
-      print(
-          'Error in logOut - FirebaseAuthException: ${e.message}, Code: ${e.code}');
-      return false;
-    } catch (e) {
-      print('Error in logOut - Exception: $e');
-      return false;
-    }
-  }
-
-  @override
-  Future<bool> loginWithFacebook() async {
+  Future<Response> loginWithFacebook() async {
     try {
       LoginResult loginResult = await _facebookAuth.login();
       if (loginResult.status == LoginStatus.success) {
         final OAuthCredential credential =
             FacebookAuthProvider.credential(loginResult.accessToken!.token);
-        return await authenticateOrLinkUser(credential);
+        await authenticateOrLinkUser(credential);
+        return Response(ResultStatus.success);
       } else {
-        print("Facebook login failed: ${loginResult.status}");
-        return false;
+        return _handleException('facebook_signin_error',
+            e: Exception(loginResult.message));
       }
-    } catch (e) {
-      print("Error during Facebook sign-in: $e");
-      return false;
+    } catch (e, s) {
+      return _handleException('facebook_signin_error', e: e, s: s);
     }
   }
 
-  Future<bool> authenticateOrLinkUser(OAuthCredential credential) async {
+  Future<Response> authenticateOrLinkUser(OAuthCredential credential) async {
     if (_firebaseAuth.currentUser != null) {
-      return await linkAccountWithCredential(credential);
+      return await linkAccountWithCredential(
+          credential, _firebaseAuth.currentUser!);
     } else {
       return await signInWithFirebase(credential);
     }
   }
 
-  @override
-  Future<bool> linkAccountWithCredential(AuthCredential credential) async {
-    User? currentUser = _firebaseAuth.currentUser;
-    if (currentUser == null) {
-      print("No current user to link credential.");
-      return false;
-    }
-    try {
-      await currentUser.linkWithCredential(credential);
-      return true;
-    } catch (e) {
-      print("Error in linkAccountWithCredential: $e");
-      return false;
-    }
+  Future<Response> linkAccountWithCredential(
+      AuthCredential credential, User user) async {
+    await user.linkWithCredential(credential);
+    return Response(ResultStatus.success);
+  }
+
+  Response<T> _handleException<T>(String? message, {Object? e, StackTrace? s}) {
+    return _errorManager.handleException(message ?? 'unknown_error',
+        exception: e, stackTrace: s);
   }
 }

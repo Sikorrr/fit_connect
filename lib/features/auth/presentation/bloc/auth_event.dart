@@ -17,3 +17,6 @@ class ToggleFormType extends AuthEvent {}
 class GoogleSignInRequested extends AuthEvent {}
 
 class FacebookSignInRequested extends AuthEvent {}
+
+class Logout extends AuthEvent {}
+
