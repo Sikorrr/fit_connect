@@ -1,17 +1,17 @@
 import 'package:firebase_auth/firebase_auth.dart';
 
+import '../../../../core/api/response.dart';
+
+
 abstract class AuthRepository {
-  Future<bool> login(String email, String password);
+  Future<Response> login(String email, String password);
 
-  Future<bool> loginWithGoogle();
+  Future<Response> register(String email, String password);
 
-  Future<bool> loginWithFacebook();
+  Future<Response> loginWithGoogle();
 
-  Future<bool> register(String email, String password);
+  Future<Response> loginWithFacebook();
 
-  Future<bool> logOut();
+  Future<Response> logOut();
 
-  Future<bool> signInWithFirebase(AuthCredential credential);
-
-  Future<bool> linkAccountWithCredential(AuthCredential credential);
 }

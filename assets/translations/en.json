@@ -15,5 +15,16 @@
   "create_account": "Create Account",
   "sign_up": "Sign up",
   "email": "e-mail",
-  "password": "password"
+  "password": "password",
+  "login_failed": "Failed to log in",
+  "register_failed": "Failed to register",
+  "sign_out_error": "Error during sign out",
+  "google_signin_cancelled": "Google sign-in cancelled",
+  "google_signin_error": "Error during Google sign-in",
+  "facebook_signin_error": "Error during Facebook sign-in",
+  "unknown_error": "Unknown error",
+  "invalid_credential": "Invalid credentials",
+  "email_already_in_use": "Email already in use",
+  "network_request_failed": "Network error",
+  "too_many_requests": "Too many requests. Try again later"
 }
