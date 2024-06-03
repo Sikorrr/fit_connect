@@ -25,3 +25,16 @@ class ResendVerificationEmail extends AuthEvent {
 
   ResendVerificationEmail({this.displayMessage = false});
 }
+
+class PasswordResetRequested extends AuthEvent {
+  final String email;
+
+  PasswordResetRequested(this.email);
+}
+
+class NewPasswordRequested extends AuthEvent {
+  final String newPassword;
+  final String code;
+
+  NewPasswordRequested({required this.newPassword, required this.code});
+}

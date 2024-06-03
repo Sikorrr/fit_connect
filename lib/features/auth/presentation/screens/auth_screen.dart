@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:gap/gap.dart';
+import 'package:go_router/go_router.dart';
 import 'package:social_login_buttons/social_login_buttons.dart';
 
 import '../../../../common_widgets/custom_button.dart';
@@ -14,6 +15,7 @@ import '../../../../core/alert_service.dart';
 import '../../../../core/dependency_injection.dart';
 import '../../../../dialog_manager.dart';
 import '../../../../utils/validator.dart';
+import '../../../navigation/data/routes/router.dart';
 import '../bloc/auth_bloc.dart';
 import '../bloc/auth_event.dart';
 import '../bloc/auth_state.dart';
@@ -76,12 +78,19 @@ class AuthScreen extends HookWidget {
                     : 'log_in'.tr(),
               ),
               const Gap(Sizes.p12),
+              if (state.authScreenType == AuthScreenType.login)
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: LinkedText(
+                      text: 'forgot_password'.tr(),
+                      onPressed: () => context.go(Routes.forgotPassword.path)),
+                ),
+              const Gap(Sizes.p12),
               LinkedText(
                   text: state.authScreenType == AuthScreenType.register
-                      ? 'log_in.'.tr()
-                      : 'sign_up'.tr(),
-                  onPressed: () =>
-                      context.read<AuthBloc>().add(ToggleFormType())),
+                      ? 'log_in_text'.tr()
+                      : 'sign_up_text'.tr(),
+                  onPressed: () => getIt<AuthBloc>().add(ToggleFormType())),
               const Gap(Sizes.p24),
               SocialLoginButton(
                   borderRadius: Sizes.defaultRadius,

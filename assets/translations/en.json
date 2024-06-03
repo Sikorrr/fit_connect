@@ -30,5 +30,18 @@
   "continue": "Continue",
   "try_again": "Try again",
   "apply_action_code_error": "An error occurred while using the verification code",
-  "invalid_action_code": "The verification code has expired"
+  "invalid_action_code": "The verification code has expired",
+  "forgot_password": "Forgot Password?",
+  "log_in_text": "Already have an account? Log in.",
+  "sign_up_text": "Doesn't have an account? Sign up",
+  "setting_new_password_for_email": "You are setting new password for e-mail",
+  "set_new_password": "Set new password",
+  "password_updated": "Password Updated",
+  "password_updated_success": "Your password has been successfully updated. You can now log in with your new password.",
+  "password_reset_email_sent": "Password Reset Email Sent",
+  "password_reset_email_sent_message": "A link to reset your password has been sent to your email. Please check your inbox to continue with resetting your password.",
+  "reset_password": "Reset Password",
+  "failed_to_verify_password": "Failed to verify password",
+  "failed_to_confirm_password": "Failed to confirm password",
+  "failed_to_send_password_reset_email": "Failed to send password reset email"
 }

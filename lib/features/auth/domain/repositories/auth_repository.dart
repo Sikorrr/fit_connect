@@ -14,4 +14,9 @@ abstract class AuthRepository {
   Future<bool> applyActionCode(String code);
 
   Future<Response> sendVerificationEmail();
+
+  Future<(String?, Response)> verifyPasswordResetCode(String code);
+  Future<Response> resetPassword(String email);
+
+  Future<Response> confirmPasswordReset(String code, String newPassword);
 }

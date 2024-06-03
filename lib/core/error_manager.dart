@@ -45,6 +45,8 @@ class CrashlyticsErrorManager implements ErrorManager {
         return 'too_many_requests';
       case 'invalid-action-code':
         return 'invalid_action_code';
+      case 'expired-action-code':
+        return 'invalid_action_code';
       default:
         return 'unknown_error';
     }

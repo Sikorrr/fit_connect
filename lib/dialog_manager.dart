@@ -13,7 +13,9 @@ enum DialogType { success, error, info }
 class DialogManager {
   void showAppDialog(
       BuildContext context, String title, String message, DialogType type,
-      {String? secondaryButtonText, VoidCallback? onSecondaryPressed}) {
+      {String? secondaryButtonText,
+      VoidCallback? onPrimaryPressed,
+      VoidCallback? onSecondaryPressed}) {
     IconData icon;
     Color backgroundColor;
     String buttonText;
@@ -54,9 +56,8 @@ class DialogManager {
               const Gap(Sizes.p12),
               CustomButton(
                   color: backgroundColor,
-                  onPressed: () {
-                    Navigator.of(dialogContext).pop();
-                  },
+                  onPressed: onPrimaryPressed ??
+                      () => Navigator.of(dialogContext).pop(),
                   label: buttonText),
               const Gap(Sizes.p12),
               if (secondaryButtonText != null && onSecondaryPressed != null)

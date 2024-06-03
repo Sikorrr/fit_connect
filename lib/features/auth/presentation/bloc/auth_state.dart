@@ -32,3 +32,11 @@ class AuthEmailNotVerifiedState extends AuthState {
 class EmailResendSuccessState extends AuthState {
   const EmailResendSuccessState(super.authScreenType);
 }
+
+class PasswordResetSuccessState extends AuthState {
+  const PasswordResetSuccessState(super.authScreenType);
+}
+
+class PasswordChangedSuccessState extends AuthState {
+  const PasswordChangedSuccessState(super.authScreenType);
+}
