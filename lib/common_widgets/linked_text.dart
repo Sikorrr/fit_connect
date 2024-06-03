@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../constants/sizes.dart';
+
 class LinkedText extends StatelessWidget {
   final VoidCallback? onPressed;
   final String text;
@@ -12,13 +14,21 @@ class LinkedText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onPressed,
-      child: Text(
-        text,
-        style: TextStyle(
-            decoration: TextDecoration.underline,
-            color: Theme.of(context).colorScheme.inversePrimary),
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onPressed,
+        borderRadius: BorderRadius.circular(Sizes.defaultRadius),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(
+              horizontal: Sizes.p12, vertical: Sizes.p4),
+          child: Text(
+            text,
+            style: TextStyle(
+                decoration: TextDecoration.underline,
+                color: Theme.of(context).colorScheme.primary),
+          ),
+        ),
       ),
     );
   }

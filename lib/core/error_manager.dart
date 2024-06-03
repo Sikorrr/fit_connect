@@ -43,6 +43,8 @@ class CrashlyticsErrorManager implements ErrorManager {
         return 'network_request_failed';
       case 'too-many-requests':
         return 'too_many_requests';
+      case 'invalid-action-code':
+        return 'invalid_action_code';
       default:
         return 'unknown_error';
     }
@@ -57,8 +59,9 @@ class CrashlyticsErrorManager implements ErrorManager {
       {Object? exception, StackTrace? stackTrace}) {
     logError(message, exception: exception, stackTrace: stackTrace);
     final errorMessage =
-    exception is FirebaseException ? getErrorMessage(exception) : message;
-    return Response<T>(ResultStatus.error, message: getUserFriendlyMessage(errorMessage));
+        exception is FirebaseException ? getErrorMessage(exception) : message;
+    return Response<T>(ResultStatus.error,
+        message: getUserFriendlyMessage(errorMessage));
   }
 }
 
@@ -75,8 +78,6 @@ class AppErrorManager {
           exception: details.exception, stackTrace: details.stack);
     };
   }
-
-
 
   static void logError(dynamic error, {StackTrace? stackTrace}) {
     _errorManager.logError(error, stackTrace: stackTrace);

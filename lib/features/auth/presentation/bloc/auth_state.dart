@@ -24,3 +24,11 @@ class AuthErrorState extends AuthState {
 
   const AuthErrorState(super.authScreenType, this.error);
 }
+
+class AuthEmailNotVerifiedState extends AuthState {
+  const AuthEmailNotVerifiedState(super.authScreenType);
+}
+
+class EmailResendSuccessState extends AuthState {
+  const EmailResendSuccessState(super.authScreenType);
+}

@@ -1,7 +1,4 @@
-import 'package:firebase_auth/firebase_auth.dart';
-
 import '../../../../core/api/response.dart';
-
 
 abstract class AuthRepository {
   Future<Response> login(String email, String password);
@@ -14,4 +11,7 @@ abstract class AuthRepository {
 
   Future<Response> logOut();
 
+  Future<bool> applyActionCode(String code);
+
+  Future<Response> sendVerificationEmail();
 }
