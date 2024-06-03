@@ -7,11 +7,14 @@ class CustomButton extends StatelessWidget {
       {super.key,
       required this.onPressed,
       required this.label,
+      this.color,
       this.isLoading = false});
 
   final VoidCallback onPressed;
   final String label;
   final bool isLoading;
+
+  final Color? color;
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +22,7 @@ class CustomButton extends StatelessWidget {
       width: double.infinity,
       child: TextButton(
         style: TextButton.styleFrom(
-            backgroundColor: Theme.of(context).colorScheme.primary),
+            backgroundColor: color ?? Theme.of(context).colorScheme.primary),
         onPressed: isLoading ? null : onPressed,
         child: isLoading
             ? const SizedBox(

@@ -5,8 +5,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/app_state.dart';
+import '../../../../core/deeplink_handler.dart';
 import '../../../../core/dependency_injection.dart';
-import '../../../auth/data/repositories/auth_repository_impl.dart';
+import '../../../auth/domain/repositories/auth_repository.dart';
 import '../../../auth/presentation/bloc/auth_bloc.dart';
 import '../../../auth/presentation/screens/auth_screen.dart';
 import '../../../common/presentation/not_found_screen.dart';
@@ -32,11 +33,17 @@ class AppRoute {
   static final router = GoRouter(
     initialLocation: Routes.home.path,
     debugLogDiagnostics: true,
-    redirect: (context, state) {
-      final isLoggedIn = getIt<AppState>().isLoggedIn;
+    redirect: (context, state) async {
+      final appState = getIt<AppState>();
+      final isLoggedIn = appState.isLoggedIn;
+      final deepLinkService = getIt<DeepLinkHandler>();
       final path = state.uri.path;
 
-      if (isLoggedIn && path == Routes.auth.path) {
+      if (await deepLinkService.processDeepLink(state.uri) != null) {
+        return Routes.home.path;
+      }
+
+      if (isLoggedIn && appState.isEmailVerified && path == Routes.auth.path) {
         /// Redirect to home if already logged in and accessing login page
         return Routes.home.path;
       } else if (!isLoggedIn && _isProtectedRoute(path)) {
@@ -53,8 +60,8 @@ class AppRoute {
         path: Routes.auth.path,
         name: Routes.auth.name,
         builder: (context, state) => BlocProvider(
-            create: (context) => AuthBloc(getIt<AuthRepositoryImpl>()),
-            child: AuthScreen()),
+            create: (context) => AuthBloc(getIt<AuthRepository>()),
+            child: const AuthScreen()),
       ),
       ShellRoute(
         navigatorKey: _shellNavigatorKey,
@@ -87,7 +94,7 @@ class AppRoute {
             path: Routes.account.path,
             name: Routes.account.name,
             builder: (context, state) => BlocProvider(
-                create: (context) => AuthBloc(getIt<AuthRepositoryImpl>()),
+                create: (context) => AuthBloc(getIt<AuthRepository>()),
                 child: const UserScreen()),
           ),
         ],

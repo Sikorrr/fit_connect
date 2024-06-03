@@ -20,3 +20,8 @@ class FacebookSignInRequested extends AuthEvent {}
 
 class Logout extends AuthEvent {}
 
+class ResendVerificationEmail extends AuthEvent {
+  final bool displayMessage;
+
+  ResendVerificationEmail({this.displayMessage = false});
+}

@@ -4,13 +4,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/api/response.dart';
 import '../../../../core/api/result_status.dart';
-import '../../data/repositories/auth_repository_impl.dart';
+import '../../domain/repositories/auth_repository.dart';
 import '../screens/auth_screen.dart';
 import 'auth_event.dart';
 import 'auth_state.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
-  final AuthRepositoryImpl authRepository;
+  final AuthRepository authRepository;
 
   AuthBloc(this.authRepository)
       : super(const AuthInitialState(AuthScreenType.login)) {
@@ -22,6 +22,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
     on<FacebookSignInRequested>(_onFacebookSignInRequested);
 
+    on<ResendVerificationEmail>(_onResendVerificationEmail);
+
     on<Logout>(_logOut);
   }
 
@@ -30,19 +32,31 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     Response response = state.authScreenType == AuthScreenType.login
         ? await authRepository.login(event.email, event.password)
         : await authRepository.register(event.email, event.password);
-    _handleResponse(response, emit);
+    _handleAuthResponse(response, emit);
   }
 
   FutureOr<void> _onFacebookSignInRequested(event, emit) async {
     emit(AuthLoadingState(state.authScreenType));
     Response response = await authRepository.loginWithFacebook();
-    _handleResponse(response, emit);
+    _handleSocialResponse(response, emit);
   }
 
   FutureOr<void> _onGoogleSignInRequested(event, emit) async {
     emit(AuthLoadingState(state.authScreenType));
     Response response = await authRepository.loginWithGoogle();
-    _handleResponse(response, emit);
+    _handleSocialResponse(response, emit);
+  }
+
+  FutureOr<void> _onResendVerificationEmail(
+      ResendVerificationEmail event, emit) async {
+    Response response = await authRepository.sendVerificationEmail();
+    if (response.result == ResultStatus.error) {
+      emit(AuthErrorState(state.authScreenType, response.message!));
+    } else {
+      emit(event.displayMessage
+          ? EmailResendSuccessState(state.authScreenType)
+          : AuthInitialState(state.authScreenType));
+    }
   }
 
   FutureOr<void> _onToggleFormType(event, emit) {
@@ -52,15 +66,26 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     emit(AuthInitialState(newType));
   }
 
-  Future<FutureOr<void>> _logOut(Logout event, Emitter<AuthState> emit) async {
-    await authRepository.logOut();
-  }
-
-  _handleResponse(Response response, Emitter<AuthState> emit) {
+  _handleSocialResponse(Response response, Emitter<AuthState> emit) {
     emit(response.result == ResultStatus.error
         ? AuthErrorState(state.authScreenType, response.message!)
         : AuthInitialState(state.authScreenType));
   }
 
+  void _handleAuthResponse(Response response, Emitter<AuthState> emit) {
+    if (response.result == AuthResultStatus.emailNotVerified) {
+      if (state.authScreenType == AuthScreenType.register) {
+        add(ResendVerificationEmail());
+      }
+      emit(AuthEmailNotVerifiedState(state.authScreenType));
+    } else {
+      emit(response.result == ResultStatus.error
+          ? AuthErrorState(state.authScreenType, response.message!)
+          : AuthInitialState(state.authScreenType));
+    }
+  }
 
+  Future<FutureOr<void>> _logOut(Logout event, Emitter<AuthState> emit) async {
+    await authRepository.logOut();
+  }
 }

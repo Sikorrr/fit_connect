@@ -5,10 +5,11 @@ import 'package:injectable/injectable.dart';
 
 import '../../../../core/api/response.dart';
 import '../../../../core/api/result_status.dart';
+import '../../../../core/config/config.dart';
 import '../../../../core/error_manager.dart';
 import '../../domain/repositories/auth_repository.dart';
 
-@lazySingleton
+@LazySingleton(as: AuthRepository)
 class AuthRepositoryImpl implements AuthRepository {
   final FirebaseAuth _firebaseAuth;
   final GoogleSignIn _googleSignIn;
@@ -29,7 +30,7 @@ class AuthRepositoryImpl implements AuthRepository {
           .signInWithEmailAndPassword(email: email, password: password);
       return _evaluateUser(userCredential.user);
     } catch (e, s) {
-      return _handleException('login_failed', e: e, s: s);
+      return _handleException(message: 'login_failed', e: e, s: s);
     }
   }
 
@@ -40,13 +41,15 @@ class AuthRepositoryImpl implements AuthRepository {
           .createUserWithEmailAndPassword(email: email, password: password);
       return _evaluateUser(userCredential.user);
     } catch (e, s) {
-      return _handleException('register_failed', e: e, s: s);
+      return _handleException(message: 'register_failed', e: e, s: s);
     }
   }
 
   Response _evaluateUser(User? user) {
     if (user == null) return Response(ResultStatus.error);
-    return Response(ResultStatus.success);
+    return user.emailVerified
+        ? Response(ResultStatus.success)
+        : Response(AuthResultStatus.emailNotVerified);
   }
 
   Future<Response> signInWithFirebase(AuthCredential credential) async {
@@ -60,7 +63,7 @@ class AuthRepositoryImpl implements AuthRepository {
       await _firebaseAuth.signOut();
       return Response(ResultStatus.success);
     } catch (e, s) {
-      return _handleException('sign_out_error', e: e, s: s);
+      return _handleException(message: 'sign_out_error', e: e, s: s);
     }
   }
 
@@ -78,10 +81,10 @@ class AuthRepositoryImpl implements AuthRepository {
         await authenticateOrLinkUser(credential);
         return Response(ResultStatus.success);
       } else {
-        return _handleException('google_signin_cancelled');
+        return _handleException(message: 'google_signin_cancelled');
       }
     } catch (e, s) {
-      return _handleException('google_signin_error', e: e, s: s);
+      return _handleException(message: 'google_signin_error', e: e, s: s);
     }
   }
 
@@ -95,11 +98,12 @@ class AuthRepositoryImpl implements AuthRepository {
         await authenticateOrLinkUser(credential);
         return Response(ResultStatus.success);
       } else {
-        return _handleException('facebook_signin_error',
+        return _handleException(
+            message: 'facebook_signin_error',
             e: Exception(loginResult.message));
       }
     } catch (e, s) {
-      return _handleException('facebook_signin_error', e: e, s: s);
+      return _handleException(message: 'facebook_signin_error', e: e, s: s);
     }
   }
 
@@ -118,7 +122,36 @@ class AuthRepositoryImpl implements AuthRepository {
     return Response(ResultStatus.success);
   }
 
-  Response<T> _handleException<T>(String? message, {Object? e, StackTrace? s}) {
+  @override
+  Future<Response> sendVerificationEmail() async {
+    User? user = _firebaseAuth.currentUser;
+    if (user != null && !user.emailVerified) {
+      try {
+        await user.sendEmailVerification(ActionCodeSettings(
+          url: verificationUrl,
+        ));
+        return Response(ResultStatus.success);
+      } catch (e, s) {
+        return _handleException(
+            message: 'Failed to send verification email', e: e, s: s);
+      }
+    }
+    return _handleException();
+  }
+
+  @override
+  Future<bool> applyActionCode(String code) async {
+    try {
+      await _firebaseAuth.applyActionCode(code);
+      await _firebaseAuth.currentUser?.reload();
+      return true;
+    } catch (e, s) {
+      _handleException(message: 'apply_action_code_error', e: e, s: s);
+      return false;
+    }
+  }
+
+  Response<T> _handleException<T>({String? message, Object? e, StackTrace? s}) {
     return _errorManager.handleException(message ?? 'unknown_error',
         exception: e, stackTrace: s);
   }

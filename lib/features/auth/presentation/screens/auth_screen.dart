@@ -12,8 +12,8 @@ import '../../../../common_widgets/linked_text.dart';
 import '../../../../constants/sizes.dart';
 import '../../../../core/alert_service.dart';
 import '../../../../core/dependency_injection.dart';
+import '../../../../dialog_manager.dart';
 import '../../../../utils/validator.dart';
-import '../../data/repositories/auth_repository_impl.dart';
 import '../bloc/auth_bloc.dart';
 import '../bloc/auth_event.dart';
 import '../bloc/auth_state.dart';
@@ -24,9 +24,7 @@ enum AuthScreenType {
 }
 
 class AuthScreen extends HookWidget {
-  AuthScreen({super.key});
-
-  final AuthRepositoryImpl authRepositoryImpl = getIt<AuthRepositoryImpl>();
+  const AuthScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -44,8 +42,11 @@ class AuthScreen extends HookWidget {
 
     return BlocConsumer<AuthBloc, AuthState>(listener: (context, state) {
       if (state is AuthErrorState) {
-        getIt<AlertService>()
-            .showMessage(context, state.error, MessageType.error);
+        _handleErrorState(context, state);
+      } else if (state is AuthEmailNotVerifiedState) {
+        _handleEmailNotVerifiedState(context);
+      } else if (state is EmailResendSuccessState) {
+        _handleEmailResendSuccessState(context);
       }
     }, builder: (BuildContext context, AuthState state) {
       return CustomScaffold(
@@ -98,5 +99,29 @@ class AuthScreen extends HookWidget {
         ),
       );
     });
+  }
+
+  void _handleErrorState(BuildContext context, AuthErrorState state) {
+    getIt<AlertService>().showMessage(context, state.error, MessageType.error);
+  }
+
+  void _handleEmailNotVerifiedState(BuildContext context) {
+    getIt<DialogManager>().showAppDialog(
+      context,
+      "Email Verification Required",
+      "Please verify your email to continue. Check your inbox for the verification email.",
+      DialogType.info,
+      secondaryButtonText: 'Resend Email',
+      onSecondaryPressed: () {
+        context
+            .read<AuthBloc>()
+            .add(ResendVerificationEmail(displayMessage: true));
+      },
+    );
+  }
+
+  void _handleEmailResendSuccessState(BuildContext context) {
+    getIt<AlertService>()
+        .showMessage(context, 'E-mail successfully sent', MessageType.success);
   }
 }

@@ -19,7 +19,8 @@ abstract class FirebaseModule {
   FirebaseAuth get firebaseAuth => FirebaseAuth.instance;
 
   @Named('GoogleSignInInstance')
-  GoogleSignIn googleSignIn() => GoogleSignIn(clientId: kIsWeb ? googleSignInClientId : null);
+  GoogleSignIn googleSignIn() =>
+      GoogleSignIn(clientId: kIsWeb ? googleSignInClientId : null);
 
   @Named('FacebookAuthInstance')
   FacebookAuth facebookAuth() => FacebookAuth.instance;
