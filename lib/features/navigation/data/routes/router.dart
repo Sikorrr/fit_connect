@@ -10,6 +10,9 @@ import '../../../../core/dependency_injection.dart';
 import '../../../auth/domain/repositories/auth_repository.dart';
 import '../../../auth/presentation/bloc/auth_bloc.dart';
 import '../../../auth/presentation/screens/auth_screen.dart';
+import '../../../auth/presentation/screens/forgot_password_screen.dart';
+import '../../../auth/presentation/screens/reset_password_screen.dart';
+import '../../../common/presentation/error_screen.dart';
 import '../../../common/presentation/not_found_screen.dart';
 import '../../../common/presentation/placeholder_screen.dart';
 import '../../presentation/bloc/navigation_bloc.dart';
@@ -20,7 +23,10 @@ enum Routes {
   auth("/auth"),
   search("/search"),
   messages("/messages"),
-  account("/account");
+  account("/account"),
+  resetPassword("/resetPassword"),
+  forgotPassword("/forgotPassword"),
+  error("/error");
 
   const Routes(this.path);
 
@@ -39,8 +45,9 @@ class AppRoute {
       final deepLinkService = getIt<DeepLinkHandler>();
       final path = state.uri.path;
 
-      if (await deepLinkService.processDeepLink(state.uri) != null) {
-        return Routes.home.path;
+      String? deeplinkPath = await deepLinkService.processDeepLink(state.uri);
+      if (deeplinkPath != null) {
+        return deeplinkPath;
       }
 
       if (isLoggedIn && appState.isEmailVerified && path == Routes.auth.path) {
@@ -62,6 +69,37 @@ class AppRoute {
         builder: (context, state) => BlocProvider(
             create: (context) => AuthBloc(getIt<AuthRepository>()),
             child: const AuthScreen()),
+      ),
+      GoRoute(
+        path: "${Routes.error.path}/:error",
+        name: Routes.error.name,
+        builder: (context, state) {
+          String? error = state.pathParameters['error'];
+          return ErrorScreen(
+            message: error,
+          );
+        },
+      ),
+      GoRoute(
+          path: "${Routes.resetPassword.path}/:code&:email",
+          name: Routes.resetPassword.name,
+          builder: (context, state) {
+            String? code = state.pathParameters['code'];
+            String? email = state.pathParameters['email'];
+            if (code != null && email != null) {
+              return BlocProvider(
+                  create: (context) => AuthBloc(getIt<AuthRepository>()),
+                  child: ResetPasswordScreen(code: code, email: email));
+            } else {
+              return const NotFoundScreen();
+            }
+          }),
+      GoRoute(
+        path: Routes.forgotPassword.path,
+        name: Routes.forgotPassword.name,
+        builder: (context, state) => BlocProvider(
+            create: (context) => AuthBloc(getIt<AuthRepository>()),
+            child: const ForgotPasswordScreen()),
       ),
       ShellRoute(
         navigatorKey: _shellNavigatorKey,

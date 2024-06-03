@@ -30,5 +30,18 @@
   "continue": "Kontynuuj",
   "try_again": "Spróbuj ponownie",
   "apply_action_code_error": "Wystąpił błąd podczas używania kodu weryfikacyjnego",
-  "invalid_action_code": "Kod weryfikacyjny wygasł"
+  "invalid_action_code": "Kod weryfikacyjny wygasł",
+  "forgot_password": "Zapomniałeś hasła?",
+  "log_in_text": "Masz już konto? Zaloguj się.",
+  "sign_up_text": "Nie masz konta? Zarejestruj się",
+  "setting_new_password_for_email": "Ustawiasz nowe hasło dla e-maila",
+  "set_new_password": "Ustaw nowe hasło",
+  "password_updated": "Hasło zostało zaktualizowane",
+  "password_updated_success": "Twoje hasło zostało pomyślnie zaktualizowane. Możesz teraz zalogować się przy użyciu nowego hasła.",
+  "password_reset_email_sent": "Wysłano e-mail do resetowania hasła",
+  "password_reset_email_sent_message": "Link do resetowania hasła został wysłany na Twój adres e-mail. Sprawdź swoją skrzynkę odbiorczą, aby kontynuować resetowanie hasła.",
+  "reset_password": "Zresetuj hasło",
+  "failed_to_verify_password": "Nie udało się zweryfikować hasła",
+  "failed_to_confirm_password": "Nie udało się potwierdzić hasła",
+  "failed_to_send_password_reset_email": "Nie udało się wysłać e-maila do resetowania hasła"
 }

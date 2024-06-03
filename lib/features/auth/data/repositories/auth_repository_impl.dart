@@ -151,6 +151,41 @@ class AuthRepositoryImpl implements AuthRepository {
     }
   }
 
+  @override
+  Future<(String?, Response)> verifyPasswordResetCode(String code) async {
+    try {
+      String email = await _firebaseAuth.verifyPasswordResetCode(code);
+      return (email, Response(ResultStatus.success));
+    } catch (e, s) {
+      return (
+        null,
+        _handleException(message: 'failed_to_verify_password', e: e, s: s)
+      );
+    }
+  }
+
+  @override
+  Future<Response> confirmPasswordReset(String code, String newPassword) async {
+    try {
+      _firebaseAuth.confirmPasswordReset(code: code, newPassword: newPassword);
+      return Response(ResultStatus.success);
+    } catch (e, s) {
+      return _handleException(
+          message: 'failed_to_confirm_password', e: e, s: s);
+    }
+  }
+
+  @override
+  Future<Response> resetPassword(String email) async {
+    try {
+      _firebaseAuth.sendPasswordResetEmail(email: email);
+      return Response(ResultStatus.success);
+    } catch (e, s) {
+      return _handleException(
+          message: 'failed_to_send_password_reset_email', e: e, s: s);
+    }
+  }
+
   Response<T> _handleException<T>({String? message, Object? e, StackTrace? s}) {
     return _errorManager.handleException(message ?? 'unknown_error',
         exception: e, stackTrace: s);

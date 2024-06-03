@@ -24,6 +24,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
     on<ResendVerificationEmail>(_onResendVerificationEmail);
 
+    on<PasswordResetRequested>(_onPasswordReset);
+
+    on<NewPasswordRequested>(_newPasswordRequested);
+
     on<Logout>(_logOut);
   }
 
@@ -87,5 +91,22 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
   Future<FutureOr<void>> _logOut(Logout event, Emitter<AuthState> emit) async {
     await authRepository.logOut();
+  }
+
+  FutureOr<void> _onPasswordReset(PasswordResetRequested event, emit) async {
+    Response response = await authRepository.resetPassword(event.email);
+    emit(response.result == ResultStatus.error
+        ? AuthErrorState(state.authScreenType, response.message!)
+        : PasswordResetSuccessState(state.authScreenType));
+  }
+
+  FutureOr<void> _newPasswordRequested(
+      NewPasswordRequested event, Emitter<AuthState> emit) async {
+    emit(AuthLoadingState(state.authScreenType));
+    Response response = await authRepository.confirmPasswordReset(
+        event.code, event.newPassword);
+    emit(response.result == ResultStatus.error
+        ? AuthErrorState(state.authScreenType, response.message!)
+        : PasswordChangedSuccessState(state.authScreenType));
   }
 }
