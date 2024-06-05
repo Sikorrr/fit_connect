@@ -7,8 +7,8 @@ import 'package:url_strategy/url_strategy.dart';
 
 import 'core/config/config.dart';
 import 'core/config/firebase_options.dart';
-import 'core/dependency_injection.dart';
-import 'core/error_manager.dart';
+import 'core/dependency_injection/dependency_injection.dart';
+import 'core/error/error_manager.dart';
 import 'features/navigation/data/routes/router.dart';
 
 Future<void> main() async {

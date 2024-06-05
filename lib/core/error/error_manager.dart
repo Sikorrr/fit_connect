@@ -4,8 +4,8 @@ import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:injectable/injectable.dart';
 
-import 'api/response.dart';
-import 'api/result_status.dart';
+import '../api/response.dart';
+import '../api/result_status.dart';
 
 abstract class ErrorManager {
   void initialize();

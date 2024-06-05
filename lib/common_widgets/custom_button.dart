@@ -10,10 +10,9 @@ class CustomButton extends StatelessWidget {
       this.color,
       this.isLoading = false});
 
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
   final String label;
   final bool isLoading;
-
   final Color? color;
 
   @override
@@ -21,15 +20,24 @@ class CustomButton extends StatelessWidget {
     return SizedBox(
       width: double.infinity,
       child: TextButton(
-        style: TextButton.styleFrom(
-            backgroundColor: color ?? Theme.of(context).colorScheme.primary),
+        style: ButtonStyle(
+          backgroundColor: WidgetStateProperty.resolveWith<Color?>(
+            (Set<WidgetState> states) {
+              if (states.contains(WidgetState.disabled)) {
+                return Theme.of(context).colorScheme.primary.withOpacity(0.5);
+              }
+              return color ?? Theme.of(context).colorScheme.primary;
+            },
+          ),
+        ),
         onPressed: isLoading ? null : onPressed,
         child: isLoading
-            ? const SizedBox(
+            ? SizedBox(
                 width: Sizes.p16,
                 height: Sizes.p16,
                 child: CircularProgressIndicator(
                   strokeWidth: Sizes.defaultStrokeWidth,
+                  color: Theme.of(context).colorScheme.onPrimary,
                 ),
               )
             : Text(

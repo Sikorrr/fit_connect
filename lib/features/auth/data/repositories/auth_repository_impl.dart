@@ -6,7 +6,8 @@ import 'package:injectable/injectable.dart';
 import '../../../../core/api/response.dart';
 import '../../../../core/api/result_status.dart';
 import '../../../../core/config/config.dart';
-import '../../../../core/error_manager.dart';
+import '../../../../core/dependency_injection/dependency_injection.dart';
+import '../../../../core/error/error_manager.dart';
 import '../../domain/repositories/auth_repository.dart';
 
 @LazySingleton(as: AuthRepository)
@@ -17,9 +18,9 @@ class AuthRepositoryImpl implements AuthRepository {
   final ErrorManager _errorManager;
 
   AuthRepositoryImpl(
-    @Named('FirebaseAuthInstance') this._firebaseAuth,
-    @Named('GoogleSignInInstance') this._googleSignIn,
-    @Named('FacebookAuthInstance') this._facebookAuth,
+    @Named(firebaseAuthInstance) this._firebaseAuth,
+    @Named(googleSignInInstance) this._googleSignIn,
+    @Named(facebookAuthInstance) this._facebookAuth,
     this._errorManager,
   );
 

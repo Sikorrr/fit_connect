@@ -34,12 +34,16 @@ dependencies:
   gap: ^3.0.1
   easy_localization: ^3.0.7
   social_login_buttons: ^1.0.7
-  firebase_auth: ^4.20.0
+  firebase_auth: ^5.0.0
   google_sign_in: ^6.2.1
   flutter_facebook_auth: 6.1.1 # Use this version unless issue is fixed on GitHub: [https://github.com/darwin-morocho/flutter-facebook-auth/issues/397]
   flutter_hooks: ^0.20.5
   url_strategy: ^0.2.0
-  firebase_crashlytics: ^3.5.4
+  firebase_crashlytics: ^4.0.0
+  cloud_firestore: ^5.0.0
+  dio: ^5.4.3+1
+
+
 
 
 dev_dependencies:
