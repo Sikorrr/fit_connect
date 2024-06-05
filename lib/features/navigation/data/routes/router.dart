@@ -1,12 +1,16 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fit_connect/features/navigation/data/routes/tab_routes.dart';
 import 'package:fit_connect/features/user/presentation/user_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../../core/app_state.dart';
-import '../../../../core/deeplink_handler.dart';
-import '../../../../core/dependency_injection.dart';
+import '../../../../core/api/response.dart';
+import '../../../../core/api/result_status.dart';
+import '../../../../core/dependency_injection/dependency_injection.dart';
+import '../../../../core/state/app_state.dart';
+import '../../../account/presentation/bloc/user_data_bloc.dart';
+import '../../../account/presentation/screens/account_creation_screen.dart';
 import '../../../auth/domain/repositories/auth_repository.dart';
 import '../../../auth/presentation/bloc/auth_bloc.dart';
 import '../../../auth/presentation/screens/auth_screen.dart';
@@ -15,8 +19,10 @@ import '../../../auth/presentation/screens/reset_password_screen.dart';
 import '../../../common/presentation/error_screen.dart';
 import '../../../common/presentation/not_found_screen.dart';
 import '../../../common/presentation/placeholder_screen.dart';
+import '../../../shared/data/repositories/user_repository_impl.dart';
 import '../../presentation/bloc/navigation_bloc.dart';
 import '../../presentation/screens/tab_navigator.dart';
+import 'deeplink_handler.dart';
 
 enum Routes {
   home("/"),
@@ -26,6 +32,7 @@ enum Routes {
   account("/account"),
   resetPassword("/resetPassword"),
   forgotPassword("/forgotPassword"),
+  onboarding("/onboarding"),
   error("/error");
 
   const Routes(this.path);
@@ -43,6 +50,7 @@ class AppRoute {
       final appState = getIt<AppState>();
       final isLoggedIn = appState.isLoggedIn;
       final deepLinkService = getIt<DeepLinkHandler>();
+      final userRepository = getIt<UserRepositoryImpl>();
       final path = state.uri.path;
 
       String? deeplinkPath = await deepLinkService.processDeepLink(state.uri);
@@ -51,6 +59,15 @@ class AppRoute {
       }
 
       if (isLoggedIn && appState.isEmailVerified && path == Routes.auth.path) {
+        Response<bool> response =
+            await userRepository.hasCompletedOnboarding(appState.userId);
+        bool hasCompletedOnboarding =
+            response.result == ResultStatus.success ? response.data! : false;
+
+        if (!hasCompletedOnboarding) {
+          return Routes.onboarding.path;
+        }
+
         /// Redirect to home if already logged in and accessing login page
         return Routes.home.path;
       } else if (!isLoggedIn && _isProtectedRoute(path)) {
@@ -100,6 +117,15 @@ class AppRoute {
         builder: (context, state) => BlocProvider(
             create: (context) => AuthBloc(getIt<AuthRepository>()),
             child: const ForgotPasswordScreen()),
+      ),
+      GoRoute(
+        path: Routes.onboarding.path,
+        name: Routes.onboarding.name,
+        builder: (context, state) => BlocProvider(
+            create: (context) => UserDataBloc(
+                getIt<FirebaseAuth>(instanceName: facebookAuthInstance),
+                getIt<UserRepositoryImpl>()),
+            child: AccountCreationScreen()),
       ),
       ShellRoute(
         navigatorKey: _shellNavigatorKey,

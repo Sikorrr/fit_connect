@@ -1,8 +1,8 @@
 import 'package:injectable/injectable.dart';
 
-import '../../features/navigation/data/routes/router.dart';
-import '../features/auth/domain/repositories/auth_repository.dart';
-import 'api/response.dart';
+import '../../../../../features/navigation/data/routes/router.dart';
+import '../../../../core/api/response.dart';
+import '../../../auth/domain/repositories/auth_repository.dart';
 
 @singleton
 class DeepLinkHandler {
