@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart' as firebase;
 
 import '../../../../core/dependency_injection/dependency_injection.dart';
 import '../../../shared/data/models/user.dart';
-import '../../../shared/data/repositories/user_repository_impl.dart';
+import '../../../shared/domain/repositories/user_repository.dart';
 
 abstract class UserDataState extends Equatable {
   final User user;
@@ -20,8 +20,7 @@ class InitialUserDataState extends UserDataState {
   factory InitialUserDataState.fromFirebaseUser(firebase.User firebaseUser) {
     final user = User(id: firebaseUser.uid, email: firebaseUser.email!);
     final initialUserDataState = InitialUserDataState(user: user);
-    getIt<UserRepositoryImpl>()
-        .createInitialUserProfile(initialUserDataState.user);
+    getIt<UserRepository>().createInitialUserProfile(initialUserDataState.user);
     return initialUserDataState;
   }
 }

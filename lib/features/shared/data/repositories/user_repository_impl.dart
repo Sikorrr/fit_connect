@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:injectable/injectable.dart';
 
 import '../../../../constants/constants.dart';
@@ -9,7 +10,7 @@ import '../../../../core/error/error_manager.dart';
 import '../../domain/repositories/user_repository.dart';
 import '../models/user.dart';
 
-@lazySingleton
+@LazySingleton(as: UserRepository)
 class UserRepositoryImpl implements UserRepository {
   final FirebaseFirestore _firestore;
   final ErrorManager _errorManager;
@@ -37,6 +38,7 @@ class UserRepositoryImpl implements UserRepository {
     }
   }
 
+  @override
   Future<Response<void>> updateUserField(
       User user, String field, dynamic value) async {
     try {
@@ -107,8 +109,27 @@ class UserRepositoryImpl implements UserRepository {
     );
   }
 
+  @override
+  Future<Response<User>> getUserProfile(String? userId) async {
+    try {
+      DocumentSnapshot docSnapshot = await _firestore
+          .collection(FirestoreConstants.usersCollection)
+          .doc(userId)
+          .get();
+      if (docSnapshot.exists) {
+        Map<String, dynamic> data = docSnapshot.data() as Map<String, dynamic>;
+        User user = User.fromJson(data);
+        return Response(ResultStatus.success, data: user);
+      } else {
+        return Response(ResultStatus.error, message: "user_not_found".tr());
+      }
+    } catch (e, s) {
+      return _handleException("failed_to_retrieve_user", e: e, s: s);
+    }
+  }
+
   Response<T> _handleException<T>(String? message, {Object? e, StackTrace? s}) {
-    return _errorManager.handleException(message ?? 'Unknown error',
+    return _errorManager.handleException(message ?? 'unknown_error',
         exception: e, stackTrace: s);
   }
 }
