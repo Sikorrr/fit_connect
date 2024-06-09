@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:fit_connect/core/state/app_state.dart';
 import 'package:injectable/injectable.dart';
 
 import '../../../../constants/constants.dart';
@@ -125,6 +126,22 @@ class UserRepositoryImpl implements UserRepository {
       }
     } catch (e, s) {
       return _handleException("failed_to_retrieve_user", e: e, s: s);
+    }
+  }
+
+  @override
+  Future<Response<List<User>>> fetchUsers() async {
+    try {
+      QuerySnapshot snapshot =
+          await _firestore.collection(FirestoreConstants.usersCollection).get();
+      User? currentUser = getIt<AppState>().user;
+      List<User> users = snapshot.docs
+          .map((doc) => User.fromJson(doc.data() as Map<String, dynamic>))
+          .toList();
+      users.removeWhere((item) => item.id == currentUser!.id);
+      return Response(ResultStatus.success, data: users);
+    } catch (e, s) {
+      return _handleException<List<User>>("failed_to_fetch_users", e: e, s: s);
     }
   }
 

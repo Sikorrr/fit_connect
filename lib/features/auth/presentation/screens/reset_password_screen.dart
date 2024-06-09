@@ -9,7 +9,7 @@ import 'package:go_router/go_router.dart';
 import '../../../../common_widgets/custom_button.dart';
 import '../../../../common_widgets/custom_scaffold.dart';
 import '../../../../common_widgets/custom_textformfield.dart';
-import '../../../../constants/sizes.dart';
+import '../../../../constants/style_guide.dart';
 import '../../../../core/alerts/alert_service.dart';
 import '../../../../core/alerts/dialog_manager.dart';
 import '../../../../core/dependency_injection/dependency_injection.dart';

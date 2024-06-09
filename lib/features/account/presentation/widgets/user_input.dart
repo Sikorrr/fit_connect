@@ -3,7 +3,7 @@ import 'package:gap/gap.dart';
 
 import '../../../../common_widgets/custom_button.dart';
 import '../../../../common_widgets/responsive_center.dart';
-import '../../../../constants/sizes.dart';
+import '../../../../constants/style_guide.dart';
 
 class UserInput extends StatelessWidget {
   const UserInput({

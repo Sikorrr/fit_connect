@@ -20,6 +20,11 @@ import '../../../auth/presentation/screens/reset_password_screen.dart';
 import '../../../common/presentation/error_screen.dart';
 import '../../../common/presentation/not_found_screen.dart';
 import '../../../common/presentation/placeholder_screen.dart';
+import '../../../explore/presentation/bloc/explore_bloc.dart';
+import '../../../explore/presentation/bloc/explore_event.dart';
+import '../../../explore/presentation/screens/explore_screen.dart';
+import '../../../explore/presentation/screens/user_profile_screen.dart';
+import '../../../shared/data/models/user.dart' as customUser;
 import '../../../shared/domain/repositories/user_repository.dart';
 import '../../presentation/bloc/navigation_bloc.dart';
 import '../../presentation/screens/tab_navigator.dart';
@@ -28,12 +33,13 @@ import 'deeplink_handler.dart';
 enum Routes {
   home("/"),
   auth("/auth"),
-  search("/search"),
   messages("/messages"),
   account("/account"),
   resetPassword("/resetPassword"),
   forgotPassword("/forgotPassword"),
   onboarding("/onboarding"),
+  explore("/explore"),
+  userDetails(":id"),
   error("/error");
 
   const Routes(this.path);
@@ -59,7 +65,10 @@ class AppRoute {
         return deeplinkPath;
       }
 
-      if (isLoggedIn && appState.isEmailVerified && path == Routes.auth.path) {
+      if (isLoggedIn
+          // && appState.isEmailVerified
+          &&
+          path == Routes.auth.path) {
         Response<bool> response =
             await userRepository.hasCompletedOnboarding(appState.user?.id);
         bool hasCompletedOnboarding =
@@ -145,10 +154,21 @@ class AppRoute {
                 child: PlaceholderScreen(title: Routes.home.name)),
           ),
           GoRoute(
-            path: Routes.search.path,
-            pageBuilder: (context, state) => NoTransitionPage(
-                child: PlaceholderScreen(title: Routes.search.name)),
-          ),
+              path: Routes.explore.path,
+              pageBuilder: (context, state) => NoTransitionPage(
+                  child: BlocProvider(
+                      create: (context) => ExploreBloc(getIt<UserRepository>())
+                        ..add(FetchUsersEvent()),
+                      child: const ExploreScreen())),
+              routes: [
+                GoRoute(
+                  path: Routes.userDetails.path,
+                  builder: (context, state) {
+                    final customUser.User user = state.extra as customUser.User;
+                    return UserProfileScreen(user: user);
+                  },
+                ),
+              ]),
           GoRoute(
             path: Routes.messages.path,
             pageBuilder: (context, state) => NoTransitionPage(
@@ -158,12 +178,17 @@ class AppRoute {
           GoRoute(
             path: Routes.account.path,
             pageBuilder: (context, state) => NoTransitionPage(
-              child: BlocProvider(
+              child: MultiBlocProvider(providers: [
+                BlocProvider<UserDataBloc>(
                   create: (context) => UserDataBloc(
-                      getIt<FirebaseAuth>(instanceName: firebaseAuthInstance),
-                      getIt<UserRepository>())
-                    ..add(FetchUserData()),
-                  child: const AccountScreen()),
+                    getIt<FirebaseAuth>(instanceName: firebaseAuthInstance),
+                    getIt<UserRepository>(),
+                  )..add(FetchUserData()),
+                ),
+                BlocProvider<AuthBloc>(
+                  create: (context) => AuthBloc(getIt<AuthRepository>()),
+                ),
+              ], child: const AccountScreen()),
             ),
           ),
         ],
