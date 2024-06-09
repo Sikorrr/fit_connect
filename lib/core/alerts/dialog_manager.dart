@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:injectable/injectable.dart';
 
-import '../../../../constants/sizes.dart';
+import '../../../../constants/style_guide.dart';
 
 enum DialogType { success, error, info }
 

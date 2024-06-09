@@ -10,7 +10,7 @@ import '../../../../common_widgets/custom_button.dart';
 import '../../../../common_widgets/custom_scaffold.dart';
 import '../../../../common_widgets/custom_textformfield.dart';
 import '../../../../common_widgets/linked_text.dart';
-import '../../../../constants/sizes.dart';
+import '../../../../constants/style_guide.dart';
 import '../../../../core/alerts/alert_service.dart';
 import '../../../../core/alerts/dialog_manager.dart';
 import '../../../../core/dependency_injection/dependency_injection.dart';
@@ -59,7 +59,7 @@ class AuthScreen extends HookWidget {
             children: [
               CustomTextFormField(
                 controller: emailController,
-                label: 'email'.tr(),
+                label: 'email'.tr().toLowerCase(),
                 validator: (text) => Validator.validateEmail(text),
               ),
               const Gap(Sizes.p24),
@@ -117,10 +117,10 @@ class AuthScreen extends HookWidget {
   void _handleEmailNotVerifiedState(BuildContext context) {
     getIt<DialogManager>().showAppDialog(
       context,
-      "Email Verification Required",
-      "Please verify your email to continue. Check your inbox for the verification email.",
+      'email_verification_required'.tr(),
+      'verify_email_message'.tr(),
       DialogType.info,
-      secondaryButtonText: 'Resend Email',
+      secondaryButtonText: 'resend_email'.tr(),
       onSecondaryPressed: () {
         context
             .read<AuthBloc>()
@@ -130,7 +130,10 @@ class AuthScreen extends HookWidget {
   }
 
   void _handleEmailResendSuccessState(BuildContext context) {
-    getIt<AlertService>()
-        .showMessage(context, 'E-mail successfully sent', MessageType.success);
+    getIt<AlertService>().showMessage(
+      context,
+      'email_sent_success'.tr(),
+      MessageType.success,
+    );
   }
 }

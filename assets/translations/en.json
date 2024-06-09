@@ -5,7 +5,7 @@
   "go_home": "Go to Home Page",
   "logout": "Log out",
   "home": "Home",
-  "search": "Search",
+  "explore": "Explore",
   "messages": "Messages",
   "account": "Account",
   "email_empty": "Email cannot be empty",
@@ -113,6 +113,16 @@
   "update_preferred_partner_gender": "Update Preferred Partner Gender",
   "age_range_preference": "Age Range Preference",
   "update_age_range_preference": "Update Age Range Preference",
-  "bio": "Biography",
-  "user_not_found": "User not found"
+  "bio": "Bio",
+  "user_not_found": "User not found",
+  "failed_to_fetch_users": "Failed to fetch users",
+  "no_bio": "This user hasn't added a bio yet.",
+  "email_verification_required": "Email Verification Required",
+  "verify_email_message": "Please verify your email to continue. Check your inbox for the verification email.",
+  "resend_email": "Resend Email",
+  "email_sent_success": "E-mail successfully sent",
+  "show_all_users": "Show All Users",
+  "show_matching_users": "Show Matching Users",
+  "poke": "Poke",
+  "message": "Message"
 }

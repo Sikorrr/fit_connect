@@ -12,4 +12,6 @@ abstract class UserRepository {
 
   Future<Response<void>> updateUserField(
       User user, String field, dynamic value);
+
+  Future<Response<List<User>>> fetchUsers();
 }

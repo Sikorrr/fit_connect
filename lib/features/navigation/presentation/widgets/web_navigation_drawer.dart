@@ -23,7 +23,7 @@ class WebNavigationDrawer extends StatelessWidget {
         NavigationDrawerDestination(
             icon: const Icon(Icons.home), label: Text('home'.tr())),
         NavigationDrawerDestination(
-            icon: const Icon(Icons.search), label: Text('search'.tr())),
+            icon: const Icon(Icons.search), label: Text('explore'.tr())),
         NavigationDrawerDestination(
             icon: const Icon(Icons.message), label: Text('messages'.tr())),
         NavigationDrawerDestination(

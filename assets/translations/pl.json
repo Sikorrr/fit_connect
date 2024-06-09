@@ -5,7 +5,7 @@
   "go_home": "Przejdź do strony głównej",
   "logout": "Wyloguj się",
   "home": "Strona główna",
-  "search": "Szukaj",
+  "explore": "Odkrywaj",
   "messages": "Wiadomości",
   "account": "Konto",
   "email_empty": "Email nie może być pusty",
@@ -114,5 +114,15 @@
   "age_range_preference": "Preferencja Wiekowa",
   "update_age_range_preference": "Zaktualizuj Preferencję Wiekową",
   "bio": "Biografia",
-  "user_not_found": "Nie znaleziono użytkownika"
+  "user_not_found": "Nie znaleziono użytkownika",
+  "failed_to_fetch_users": "Nie udało się pobrać użytkowników.",
+  "no_bio": "Ten użytkownik nie dodał jeszcze opisu.",
+  "email_verification_required": "Wymagana weryfikacja e-mail",
+  "verify_email_message": "Proszę zweryfikować swój e-mail, aby kontynuować. Sprawdź swoją skrzynkę odbiorczą, aby znaleźć wiadomość weryfikacyjną.",
+  "resend_email": "Wyślij ponownie e-mail",
+  "email_sent_success": "E-mail został pomyślnie wysłany",
+  "show_all_users": "Pokaż wszystkich użytkowników",
+  "show_matching_users": "Pokaż pasujących użytkowników",
+  "poke": "Szturchnij",
+  "message": "Wiadomość"
 }

@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../constants/sizes.dart';
+import '../../../constants/style_guide.dart';
 import '../../navigation/data/routes/router.dart';
 
 class ErrorScreen extends StatelessWidget {

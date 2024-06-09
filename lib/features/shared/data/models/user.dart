@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -27,6 +29,8 @@ class User {
   final String bio;
   final bool hasCompletedOnboarding;
 
+  final String imageUrl;
+
   User({
     required this.id,
     required this.email,
@@ -41,7 +45,7 @@ class User {
     this.location = '',
     this.bio = '',
     this.hasCompletedOnboarding = false,
-  });
+  }) : imageUrl = 'https://i.pravatar.cc/150?img=${_generateImageId(id)}';
 
   User copyWith({
     String? name,
@@ -55,6 +59,7 @@ class User {
     String? location,
     String? bio,
     bool? hasCompletedOnboarding,
+    String? imageUrl,
   }) {
     return User(
       id: id,
@@ -103,5 +108,40 @@ class User {
       'start': rangeValues.start,
       'end': rangeValues.end,
     };
+  }
+
+  bool matches(User otherUser) {
+    bool locationMatches = location == otherUser.location;
+    bool fitnessLevelMatches = fitnessLevel == FitnessLevel.notImportant ||
+        otherUser.fitnessLevel == FitnessLevel.notImportant ||
+        fitnessLevel == otherUser.fitnessLevel;
+
+    bool fitnessInterestsMatch = fitnessInterests
+        .toSet()
+        .intersection(otherUser.fitnessInterests.toSet())
+        .isNotEmpty;
+
+    bool workoutDayTimesMatch = preferredWorkoutDayTimes.any((preferredTime) {
+      return otherUser.preferredWorkoutDayTimes.any((otherTime) {
+        return preferredTime == otherTime;
+      });
+    });
+
+    bool genderMatch =
+        preferredGenderOfWorkoutPartner.contains(otherUser.gender);
+    bool ageMatch = ageRangePreference.start <= int.parse(otherUser.age) &&
+        ageRangePreference.end >= int.parse(otherUser.age);
+
+    return locationMatches &&
+        fitnessLevelMatches &&
+        fitnessInterestsMatch &&
+        workoutDayTimesMatch &&
+        genderMatch &&
+        ageMatch;
+  }
+
+  static int _generateImageId(String id) {
+    return utf8.encode(id).fold(0, (sum, byte) => sum + byte) % 70 +
+        1;
   }
 }

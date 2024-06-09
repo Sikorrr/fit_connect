@@ -1,7 +1,7 @@
 import 'package:fit_connect/common_widgets/responsive_center.dart';
 import 'package:flutter/material.dart';
 
-import '../../../constants/sizes.dart';
+import '../../../constants/style_guide.dart';
 
 class CustomScaffold extends StatelessWidget {
   final Widget child;

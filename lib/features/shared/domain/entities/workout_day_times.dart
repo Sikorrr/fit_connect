@@ -21,4 +21,22 @@ class WorkoutDayTimes {
     final timesDisplay = times.map((time) => time.displayName).join(', ');
     return '${day.displayName}: $timesDisplay';
   }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    if (other is! WorkoutDayTimes) return false;
+
+    if (other.day != day) return false;
+
+    final thisTimesSet = times.toSet();
+    final otherTimesSet = other.times.toSet();
+
+    return thisTimesSet.intersection(otherTimesSet).isNotEmpty;
+  }
+
+  @override
+  int get hashCode =>
+      day.hashCode ^ times.fold(0, (sum, item) => sum + item.hashCode);
 }
