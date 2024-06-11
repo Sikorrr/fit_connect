@@ -124,5 +124,13 @@
   "show_all_users": "Show All Users",
   "show_matching_users": "Show Matching Users",
   "poke": "Poke",
-  "message": "Message"
+  "message": "Message",
+  "failed_to_send_message": "Failed to send message",
+  "failed_to_fetch_conversations": "Failed to fetch conversations",
+  "failed_to_fetch_conversation": "Failed to fetch conversation",
+  "conversation_not_found": "Conversation not found",
+  "no_messages_yet": "No messages yet",
+  "loading_user": "Loading user...",
+  "no_messages": "No messages",
+  "type_your_message": "Type your message..."
 }

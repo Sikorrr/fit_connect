@@ -124,5 +124,13 @@
   "show_all_users": "Pokaż wszystkich użytkowników",
   "show_matching_users": "Pokaż pasujących użytkowników",
   "poke": "Szturchnij",
-  "message": "Wiadomość"
+  "message": "Wiadomość",
+  "failed_to_send_message": "Nie udało się wysłać wiadomości",
+  "failed_to_fetch_conversations": "Nie udało się pobrać konwersacji",
+  "failed_to_fetch_conversation": "Nie udało się pobrać konwersacji",
+  "conversation_not_found": "Nie znaleziono konwersacji",
+  "no_messages_yet": "Brak wiadomości",
+  "loading_user": "Ładowanie użytkownika...",
+  "no_messages": "Brak wiadomości",
+  "type_your_message": "Napisz swoją wiadomość..."
 }
