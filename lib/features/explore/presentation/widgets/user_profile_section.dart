@@ -1,8 +1,11 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:go_router/go_router.dart';
 
+import '../../../../constants/constants.dart';
 import '../../../../constants/style_guide.dart';
+import '../../../navigation/data/routes/router.dart';
 import '../../../shared/data/models/user.dart';
 
 class UserProfileSection extends StatelessWidget {
@@ -33,7 +36,11 @@ class UserProfileSection extends StatelessWidget {
               const Gap(Sizes.p8),
               ElevatedButton.icon(
                 onPressed: () {
-                  //TODO: Handle direct message action
+                  context.replace(
+                      '${Routes.messages.path}/${Routes.directMessage.path}${user.id}',
+                      extra: {
+                        NavigationConstants.userKey: user,
+                      });
                 },
                 icon: const Icon(Icons.message),
                 label: Text('message'.tr()),

@@ -141,7 +141,6 @@ class User {
   }
 
   static int _generateImageId(String id) {
-    return utf8.encode(id).fold(0, (sum, byte) => sum + byte) % 70 +
-        1;
+    return utf8.encode(id).fold(0, (sum, byte) => sum + byte) % 70 + 1;
   }
 }

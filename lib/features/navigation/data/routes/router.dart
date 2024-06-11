@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../constants/constants.dart';
 import '../../../../core/api/response.dart';
 import '../../../../core/api/result_status.dart';
 import '../../../../core/dependency_injection/dependency_injection.dart';
@@ -24,6 +25,12 @@ import '../../../explore/presentation/bloc/explore_bloc.dart';
 import '../../../explore/presentation/bloc/explore_event.dart';
 import '../../../explore/presentation/screens/explore_screen.dart';
 import '../../../explore/presentation/screens/user_profile_screen.dart';
+import '../../../messaging/data/models/conversation.dart';
+import '../../../messaging/domain/repositories/message_repository.dart';
+import '../../../messaging/presentation/bloc/message_bloc.dart';
+import '../../../messaging/presentation/bloc/message_event.dart';
+import '../../../messaging/presentation/screens/direct_message_screen.dart';
+import '../../../messaging/presentation/screens/messaging_screen.dart';
 import '../../../shared/data/models/user.dart' as customUser;
 import '../../../shared/domain/repositories/user_repository.dart';
 import '../../presentation/bloc/navigation_bloc.dart';
@@ -40,6 +47,7 @@ enum Routes {
   onboarding("/onboarding"),
   explore("/explore"),
   userDetails(":id"),
+  directMessage("directMessage/:id"),
   error("/error");
 
   const Routes(this.path);
@@ -170,11 +178,32 @@ class AppRoute {
                 ),
               ]),
           GoRoute(
-            path: Routes.messages.path,
-            pageBuilder: (context, state) => NoTransitionPage(
-              child: PlaceholderScreen(title: Routes.messages.name),
-            ),
-          ),
+              path: Routes.messages.path,
+              pageBuilder: (context, state) => NoTransitionPage(
+                    child: BlocProvider(
+                        create: (context) => MessageBloc(
+                            getIt<MessageRepository>(), getIt<UserRepository>())
+                          ..add(const LoadAllConversationsEvent()),
+                        child: const MessagingScreen()),
+                  ),
+              routes: [
+                GoRoute(
+                    path: Routes.directMessage.path,
+                    builder: (context, state) {
+                      final args = state.extra as Map<String, dynamic>;
+                      final user =
+                          args[NavigationConstants.userKey] as customUser.User;
+                      final Conversation? conversation =
+                          args[NavigationConstants.conversationKey];
+                      return BlocProvider(
+                        create: (context) => MessageBloc(
+                            getIt<MessageRepository>(),
+                            getIt<UserRepository>()),
+                        child: DirectMessageScreen(
+                            otherUser: user, conversation: conversation),
+                      );
+                    }),
+              ]),
           GoRoute(
             path: Routes.account.path,
             pageBuilder: (context, state) => NoTransitionPage(
