@@ -1,9 +1,8 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:intl/intl.dart';
 
 import '../../../../constants/style_guide.dart';
+import '../../../../utils/date_utils.dart';
 import '../../data/models/message.dart';
 
 class MessageTile extends StatelessWidget {
@@ -42,7 +41,7 @@ class MessageTile extends StatelessWidget {
                       color: isCurrentUser ? Colors.white : Colors.black),
                 ),
                 const Gap(Sizes.p4),
-                Text(_formatTimestamp(message.timestamp),
+                Text(formatTimestamp(message.timestamp),
                     style: Theme.of(context)
                         .textTheme
                         .bodySmall!
@@ -53,9 +52,5 @@ class MessageTile extends StatelessWidget {
         ],
       ),
     );
-  }
-
-  String _formatTimestamp(Timestamp timestamp) {
-    return DateFormat('hh:mm a').format(timestamp.toDate());
   }
 }

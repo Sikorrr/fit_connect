@@ -90,7 +90,8 @@ class AuthScreen extends HookWidget {
                   text: state.authScreenType == AuthScreenType.register
                       ? 'log_in_text'.tr()
                       : 'sign_up_text'.tr(),
-                  onPressed: () => getIt<AuthBloc>().add(ToggleFormType())),
+                  onPressed: () =>
+                      context.read<AuthBloc>().add(ToggleFormType())),
               const Gap(Sizes.p24),
               SocialLoginButton(
                   borderRadius: Sizes.defaultRadius,

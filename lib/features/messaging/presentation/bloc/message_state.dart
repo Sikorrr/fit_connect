@@ -43,6 +43,8 @@ class ConversationsLoadFailure extends MessageState {
   List<Object?> get props => [error];
 }
 
+class ConversationsEmpty extends MessageState {}
+
 class MessagesLoading extends MessageState {}
 
 class MessagesLoaded extends MessageState {

@@ -18,6 +18,8 @@ class Sizes {
 
   static const double maxScreenWidth = 400;
   static const double defaultRadius = 20;
+
+  static const double defaultElevation = 6;
   static const double defaultStrokeWidth = 2;
 
   static const double iconSize = 16.0;

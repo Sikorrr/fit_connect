@@ -19,7 +19,6 @@ import '../../../shared/domain/entities/workout_day_times.dart';
 import '../../../shared/domain/entities/workout_time.dart';
 import '../bloc/user_data_bloc.dart';
 import '../bloc/user_data_event.dart';
-import 'logout_button.dart';
 import 'multi_select_daytime_widget.dart';
 import 'multi_select_list_widget.dart';
 
@@ -236,7 +235,6 @@ class AccountScreenDetails extends StatelessWidget {
             ),
           ),
         ),
-        const LogoutButton(),
       ],
     );
   }

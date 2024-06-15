@@ -62,8 +62,7 @@ class MessageBloc extends Bloc<MessageEvent, MessageState> {
           await _updateConversationsWithUserDetails(response, user);
       emit(ConversationsLoadSuccess(conversations: updatedConversations));
     } else {
-      emit(ConversationsLoadFailure(
-          error: 'failed_to_fetch_conversations'.tr()));
+      emit(ConversationsEmpty());
     }
   }
 

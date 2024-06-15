@@ -13,8 +13,10 @@ class CustomScaffold extends StatelessWidget {
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: Sizes.p24),
-        child: ResponsiveCenter(
-          child: child,
+        child: Center(
+          child: ResponsiveCenter(
+            child: child,
+          ),
         ),
       ),
     );
