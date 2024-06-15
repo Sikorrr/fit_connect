@@ -7,6 +7,7 @@ class FirestoreConstants {
   static const String conversationsCollection = 'conversations';
   static const String messagesField = 'messages';
   static const String participantIdsField = 'participantIds';
+  static const String sessionsCollection = 'sessions';
 }
 
 class AppConstants {

@@ -1,5 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:fit_connect/features/home/home_screen.dart';
 import 'package:fit_connect/features/navigation/data/routes/tab_routes.dart';
+import 'package:fit_connect/features/workout_session/presentation/screens/all_workout_sessions_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -20,7 +22,6 @@ import '../../../auth/presentation/screens/forgot_password_screen.dart';
 import '../../../auth/presentation/screens/reset_password_screen.dart';
 import '../../../common/presentation/error_screen.dart';
 import '../../../common/presentation/not_found_screen.dart';
-import '../../../common/presentation/placeholder_screen.dart';
 import '../../../explore/presentation/bloc/explore_bloc.dart';
 import '../../../explore/presentation/bloc/explore_event.dart';
 import '../../../explore/presentation/screens/explore_screen.dart';
@@ -46,8 +47,10 @@ enum Routes {
   forgotPassword("/forgotPassword"),
   onboarding("/onboarding"),
   explore("/explore"),
+  workoutSessions("/workoutSessions"),
   userDetails(":id"),
   directMessage("directMessage/:id"),
+  accountInfo("accountInfo"),
   error("/error");
 
   const Routes(this.path);
@@ -141,7 +144,7 @@ class AppRoute {
         name: Routes.onboarding.name,
         builder: (context, state) => BlocProvider(
             create: (context) => UserDataBloc(
-                getIt<FirebaseAuth>(instanceName: facebookAuthInstance),
+                getIt<FirebaseAuth>(instanceName: firebaseAuthInstance),
                 getIt<UserRepository>()),
             child: AccountCreationScreen()),
       ),
@@ -158,8 +161,8 @@ class AppRoute {
         routes: [
           GoRoute(
             path: Routes.home.path,
-            pageBuilder: (context, state) => NoTransitionPage(
-                child: PlaceholderScreen(title: Routes.home.name)),
+            pageBuilder: (context, state) =>
+                const NoTransitionPage(child: HomeScreen()),
           ),
           GoRoute(
               path: Routes.explore.path,
@@ -205,20 +208,33 @@ class AppRoute {
                     }),
               ]),
           GoRoute(
-            path: Routes.account.path,
-            pageBuilder: (context, state) => NoTransitionPage(
-              child: MultiBlocProvider(providers: [
-                BlocProvider<UserDataBloc>(
-                  create: (context) => UserDataBloc(
-                    getIt<FirebaseAuth>(instanceName: firebaseAuthInstance),
-                    getIt<UserRepository>(),
-                  )..add(FetchUserData()),
+              path: Routes.account.path,
+              pageBuilder: (context, state) => NoTransitionPage(
+                    child: MultiBlocProvider(providers: [
+                      BlocProvider<UserDataBloc>(
+                        create: (context) => UserDataBloc(
+                          getIt<FirebaseAuth>(
+                              instanceName: firebaseAuthInstance),
+                          getIt<UserRepository>(),
+                        )..add(FetchUserData()),
+                      ),
+                      BlocProvider<AuthBloc>(
+                        create: (context) => AuthBloc(getIt<AuthRepository>()),
+                      ),
+                    ], child: const AccountScreen()),
+                  ),
+              routes: [
+                GoRoute(
+                  path: Routes.accountInfo.path,
+                  builder: (context, state) {
+                    return const AccountInfoScreen();
+                  },
                 ),
-                BlocProvider<AuthBloc>(
-                  create: (context) => AuthBloc(getIt<AuthRepository>()),
-                ),
-              ], child: const AccountScreen()),
-            ),
+              ]),
+          GoRoute(
+            path: Routes.workoutSessions.path,
+            pageBuilder: (context, state) =>
+                const NoTransitionPage(child: AllWorkoutSessionsScreen()),
           ),
         ],
       ),

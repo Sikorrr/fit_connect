@@ -21,6 +21,13 @@ class MessagingScreen extends StatelessWidget {
         builder: (context, state) {
           if (state is ConversationsLoading) {
             return const Center(child: CircularProgressIndicator());
+          } else if (state is ConversationsEmpty) {
+            return Center(
+              child: Text(
+                'no_conversations_found'.tr(),
+                style: const TextStyle(fontSize: 18, color: Colors.grey),
+              ),
+            );
           } else if (state is ConversationsLoadSuccess) {
             return ListView.builder(
               itemCount: state.conversations.length,

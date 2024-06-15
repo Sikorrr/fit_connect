@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../constants/constants.dart';
 import '../../../../constants/style_guide.dart';
+import '../../../../utils/dialog_utils.dart';
 import '../../../navigation/data/routes/router.dart';
 import '../../../shared/data/models/user.dart';
 
@@ -23,8 +24,10 @@ class UserProfileSection extends StatelessWidget {
             backgroundImage: NetworkImage(user.imageUrl),
           ),
           const Gap(Sizes.p16),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
+          Wrap(
+            spacing: Sizes.p8,
+            alignment: WrapAlignment.center,
+            runSpacing: Sizes.p8,
             children: [
               ElevatedButton.icon(
                 onPressed: () {
@@ -45,10 +48,26 @@ class UserProfileSection extends StatelessWidget {
                 icon: const Icon(Icons.message),
                 label: Text('message'.tr()),
               ),
+              const Gap(Sizes.p8),
+              ElevatedButton.icon(
+                onPressed: () async {
+                  _showNewSessionDialog(context);
+                },
+                icon: const Icon(Icons.sports_handball),
+                label:  Text('schedule_workout'.tr()),
+              )
             ],
           ),
         ],
       ),
+    );
+  }
+
+  void _showNewSessionDialog(BuildContext context) {
+    showSessionDialog(
+      context,
+      user: user,
+      availableActivities: user.fitnessInterests,
     );
   }
 }

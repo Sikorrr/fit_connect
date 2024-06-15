@@ -14,13 +14,11 @@ class ResponsiveCenter extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: SizedBox(
-        width: Sizes.maxScreenWidth,
-        child: Padding(
-          padding: padding,
-          child: child,
-        ),
+    return SizedBox(
+      width: Sizes.maxScreenWidth,
+      child: Padding(
+        padding: padding,
+        child: child,
       ),
     );
   }
