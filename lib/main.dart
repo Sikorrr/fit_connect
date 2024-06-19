@@ -1,4 +1,5 @@
 import 'package:easy_localization/easy_localization.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -10,7 +11,17 @@ import 'core/config/config.dart';
 import 'core/config/firebase_options.dart';
 import 'core/dependency_injection/dependency_injection.dart';
 import 'core/error/error_manager.dart';
+import 'features/account/presentation/bloc/user_data_bloc.dart';
+import 'features/account/presentation/bloc/user_data_event.dart';
+import 'features/auth/domain/repositories/auth_repository.dart';
+import 'features/auth/presentation/bloc/auth_bloc.dart';
+import 'features/explore/presentation/bloc/explore_bloc.dart';
+import 'features/explore/presentation/bloc/explore_event.dart';
+import 'features/messaging/domain/repositories/message_repository.dart';
+import 'features/messaging/presentation/bloc/message_bloc.dart';
+import 'features/messaging/presentation/bloc/message_event.dart';
 import 'features/navigation/data/routes/router.dart';
+import 'features/navigation/presentation/bloc/navigation_bloc.dart';
 import 'features/shared/domain/repositories/user_repository.dart';
 import 'features/workout_session/domain/repositories/workout_session_repository.dart';
 import 'features/workout_session/presentation/bloc/workout_session_bloc.dart';
@@ -60,6 +71,31 @@ class MyApp extends StatelessWidget {
             getIt<UserRepository>(),
           ),
         ),
+        BlocProvider(
+          create: (context) => AuthBloc(
+            getIt<AuthRepository>(),
+          ),
+        ),
+        BlocProvider(
+          create: (context) => UserDataBloc(
+            getIt<FirebaseAuth>(instanceName: firebaseAuthInstance),
+            getIt<UserRepository>(),
+          )..add(FetchUserData()),
+        ),
+        BlocProvider(
+          create: (context) => ExploreBloc(
+            getIt<UserRepository>(),
+          )..add(FetchUsersEvent()),
+        ),
+        BlocProvider(
+          create: (context) => MessageBloc(
+            getIt<MessageRepository>(),
+            getIt<UserRepository>(),
+          )..add(const LoadAllConversationsEvent()),
+        ),
+        BlocProvider(
+          create: (context) => NavigationBloc(),
+        ),
       ],
       child: MaterialApp.router(
         localizationsDelegates: context.localizationDelegates,
@@ -70,3 +106,4 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+

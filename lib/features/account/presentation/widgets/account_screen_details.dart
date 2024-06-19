@@ -30,7 +30,7 @@ class AccountScreenDetails extends StatelessWidget {
   void _showDialog(BuildContext context, Widget dialogContent) {
     showDialog(
       context: context,
-      builder: (context) {
+      builder: (BuildContext dialogContext) {
         return Dialog(child: dialogContent);
       },
     );
@@ -52,7 +52,7 @@ class AccountScreenDetails extends StatelessWidget {
               initialValue: user.name,
               onChanged: (newValue) {
                 context.read<UserDataBloc>().add(UpdateName(newValue));
-                context.pop();
+                Navigator.of(context, rootNavigator: true).pop();
               },
               validator: (text) => Validator.validateField(text),
             ),
@@ -69,7 +69,7 @@ class AccountScreenDetails extends StatelessWidget {
               initialValue: user.age,
               onChanged: (newValue) {
                 context.read<UserDataBloc>().add(UpdateAge(newValue));
-                context.pop();
+                Navigator.of(context, rootNavigator: true).pop();
               },
               validator: (text) => Validator.validateAge(text),
             ),
@@ -86,7 +86,7 @@ class AccountScreenDetails extends StatelessWidget {
               initialLocation: user.location,
               onLocationSelected: (newValue) {
                 context.read<UserDataBloc>().add(UpdateLocation(newValue));
-                context.pop();
+                Navigator.of(context, rootNavigator: true).pop();
               },
             ),
           ),
@@ -102,10 +102,10 @@ class AccountScreenDetails extends StatelessWidget {
               isEditing: true,
               initialSelectedItem: user.gender,
               displayNames:
-                  Gender.values.map((value) => value.displayName).toList(),
+              Gender.values.map((value) => value.displayName).toList(),
               onItemSelected: (newValue) {
                 context.read<UserDataBloc>().add(UpdateGender(newValue));
-                context.pop();
+                Navigator.of(context, rootNavigator: true).pop();
               },
             ),
           ),
@@ -126,7 +126,7 @@ class AccountScreenDetails extends StatelessWidget {
                 context
                     .read<UserDataBloc>()
                     .add(UpdateFitnessInterests(newValue));
-                context.pop();
+                Navigator.of(context, rootNavigator: true).pop();
               },
             ),
           ),
@@ -146,7 +146,7 @@ class AccountScreenDetails extends StatelessWidget {
                   .toList(),
               onItemSelected: (newValue) {
                 context.read<UserDataBloc>().add(UpdateFitnessLevel(newValue));
-                context.pop();
+                Navigator.of(context, rootNavigator: true).pop();
               },
             ),
           ),
@@ -168,7 +168,7 @@ class AccountScreenDetails extends StatelessWidget {
                 context
                     .read<UserDataBloc>()
                     .add(UpdatePreferredWorkoutTimes(workoutDayTimes));
-                context.pop();
+                Navigator.of(context, rootNavigator: true).pop();
               },
             ),
           ),
@@ -186,12 +186,12 @@ class AccountScreenDetails extends StatelessWidget {
               isEditing: true,
               initialSelectedItems: user.preferredGenderOfWorkoutPartner,
               displayNames:
-                  Gender.values.map((value) => value.displayName).toList(),
+              Gender.values.map((value) => value.displayName).toList(),
               onSelected: (newValue) {
                 context
                     .read<UserDataBloc>()
                     .add(UpdatePreferredGender(newValue));
-                context.pop();
+                Navigator.of(context, rootNavigator: true).pop();
               },
             ),
           ),
@@ -199,7 +199,7 @@ class AccountScreenDetails extends StatelessWidget {
         AccountInfoTile(
           title: 'age_range_preference'.tr(),
           value:
-              '${user.ageRangePreference.start.round()} - ${user.ageRangePreference.end.round()}',
+          '${user.ageRangePreference.start.round()} - ${user.ageRangePreference.end.round()}',
           onPressed: () => _showDialog(
             context,
             RangeSelector(
@@ -213,7 +213,7 @@ class AccountScreenDetails extends StatelessWidget {
                 context
                     .read<UserDataBloc>()
                     .add(UpdateAgeRangePreference(range));
-                context.pop();
+                Navigator.of(context, rootNavigator: true).pop();
               },
             ),
           ),
@@ -229,7 +229,7 @@ class AccountScreenDetails extends StatelessWidget {
               initialValue: user.bio,
               onChanged: (newValue) {
                 context.read<UserDataBloc>().add(UpdateBio(newValue));
-                context.pop();
+                Navigator.of(context, rootNavigator: true).pop();
               },
               validator: null,
             ),
@@ -239,3 +239,4 @@ class AccountScreenDetails extends StatelessWidget {
     );
   }
 }
+
