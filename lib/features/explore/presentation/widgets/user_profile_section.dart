@@ -54,7 +54,7 @@ class UserProfileSection extends StatelessWidget {
                   _showNewSessionDialog(context);
                 },
                 icon: const Icon(Icons.sports_handball),
-                label:  Text('schedule_workout'.tr()),
+                label: Text('schedule_workout'.tr()),
               )
             ],
           ),

@@ -64,7 +64,8 @@ class UserDataBloc extends Bloc<UserDataEvent, UserDataState> {
   FutureOr<void> _updateFitnessLevel(
       UpdateFitnessLevel event, Emitter<UserDataState> emit) {
     final user = state.user.copyWith(fitnessLevel: event.fitnessLevel);
-    _userRepository.updateUserField(user, 'fitnessLevel', event.fitnessLevel);
+    _userRepository.updateUserField(
+        user, 'fitnessLevel', event.fitnessLevel);
     emit(UserUpdateState(user));
   }
 
@@ -112,7 +113,7 @@ class UserDataBloc extends Bloc<UserDataEvent, UserDataState> {
 
   Future<FutureOr<void>> _finishOnboarding(
       FinishOnboarding event, Emitter<UserDataState> emit) async {
-    await _userRepository.setOnboardingComplete(state.user.id);
+    await _userRepository.setOnboardingComplete(state.user);
     emit(UserDataComplete(state.user));
   }
 

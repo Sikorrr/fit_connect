@@ -15,8 +15,6 @@ import 'features/account/presentation/bloc/user_data_bloc.dart';
 import 'features/account/presentation/bloc/user_data_event.dart';
 import 'features/auth/domain/repositories/auth_repository.dart';
 import 'features/auth/presentation/bloc/auth_bloc.dart';
-import 'features/explore/presentation/bloc/explore_bloc.dart';
-import 'features/explore/presentation/bloc/explore_event.dart';
 import 'features/messaging/domain/repositories/message_repository.dart';
 import 'features/messaging/presentation/bloc/message_bloc.dart';
 import 'features/messaging/presentation/bloc/message_event.dart';
@@ -76,17 +74,7 @@ class MyApp extends StatelessWidget {
             getIt<AuthRepository>(),
           ),
         ),
-        BlocProvider(
-          create: (context) => UserDataBloc(
-            getIt<FirebaseAuth>(instanceName: firebaseAuthInstance),
-            getIt<UserRepository>(),
-          )..add(FetchUserData()),
-        ),
-        BlocProvider(
-          create: (context) => ExploreBloc(
-            getIt<UserRepository>(),
-          )..add(FetchUsersEvent()),
-        ),
+
         BlocProvider(
           create: (context) => MessageBloc(
             getIt<MessageRepository>(),
@@ -106,4 +94,3 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-

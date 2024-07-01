@@ -6,7 +6,7 @@ abstract class UserRepository {
 
   Future<Response<bool>> hasCompletedOnboarding(String? userId);
 
-  Future<void> setOnboardingComplete(String userId);
+  Future<void> setOnboardingComplete(User user);
 
   Future<Response<User>> getUserProfile(String? userId);
 

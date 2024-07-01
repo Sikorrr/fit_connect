@@ -11,7 +11,7 @@ abstract class AuthRepository {
 
   Future<Response> logOut();
 
-  Future<bool> applyActionCode(String code);
+  Future<Response> applyActionCode(String code);
 
   Future<Response> sendVerificationEmail();
 

@@ -66,7 +66,7 @@ class ForgotPasswordScreen extends HookWidget {
       context,
       "password_reset_email_sent".tr(),
       "password_reset_email_sent_message".tr(),
-      DialogType.info,
+      InfoDialog(),
     );
   }
 

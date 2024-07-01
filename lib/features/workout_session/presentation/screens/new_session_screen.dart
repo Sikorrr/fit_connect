@@ -65,7 +65,7 @@ class NewSessionScreen extends StatelessWidget {
                     },
                   ),
                   LocationField(
-                    controller: TextEditingController(text: state.location),
+                    initialValue: state.location,
                     onChanged: (location) {
                       context.read<NewSessionCubit>().setLocation(location);
                     },

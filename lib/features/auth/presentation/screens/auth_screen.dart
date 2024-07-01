@@ -120,7 +120,7 @@ class AuthScreen extends HookWidget {
       context,
       'email_verification_required'.tr(),
       'verify_email_message'.tr(),
-      DialogType.info,
+      InfoDialog(),
       secondaryButtonText: 'resend_email'.tr(),
       onSecondaryPressed: () {
         context

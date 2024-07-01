@@ -141,14 +141,13 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<bool> applyActionCode(String code) async {
+  Future<Response> applyActionCode(String code) async {
     try {
       await _firebaseAuth.applyActionCode(code);
       await _firebaseAuth.currentUser?.reload();
-      return true;
+      return Response(ResultStatus.success);
     } catch (e, s) {
-      _handleException(message: 'apply_action_code_error', e: e, s: s);
-      return false;
+      return _handleException(message: 'apply_action_code_error', e: e, s: s);
     }
   }
 

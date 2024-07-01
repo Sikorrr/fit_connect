@@ -163,5 +163,7 @@
   "workout_session_error": "An error occurred:",
   "account_info": "Account Info",
   "schedule_workout": "Schedule\na workout",
-  "no_conversations_found": "No conversations found"
+  "no_conversations_found": "No conversations found",
+  "success": "Success",
+  "error": "Error"
 }

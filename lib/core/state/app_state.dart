@@ -59,12 +59,4 @@ class AppState with ChangeNotifier {
       _user = null;
     }
   }
-
-  Future<void> signOut() async {
-    await _firebaseAuth.signOut();
-    _isLoggedIn = false;
-    _isEmailVerified = false;
-    _user = null;
-    notifyListeners();
-  }
 }

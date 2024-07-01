@@ -71,7 +71,7 @@ class ResetPasswordScreen extends HookWidget {
 
   _handlePasswordChangedSuccessState(BuildContext context) {
     getIt<DialogManager>().showAppDialog(context, "password_updated".tr(),
-        "password_updated_success".tr(), DialogType.success,
+        "password_updated_success".tr(), SuccessDialog(),
         onPrimaryPressed: () => context.go(Routes.home.path));
   }
 
