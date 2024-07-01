@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 class FirestoreConstants {
   static const String usersCollection = 'users';
   static const String hasCompletedOnboardingField = 'hasCompletedOnboarding';
-
   static const String conversationsCollection = 'conversations';
   static const String messagesField = 'messages';
   static const String participantIdsField = 'participantIds';

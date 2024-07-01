@@ -163,5 +163,7 @@
   "workout_session_error": "Wystąpił błąd:",
   "account_info": "Informacje o koncie",
   "schedule_workout": "Zaplanuj\ntrening",
-  "no_conversations_found": "Nie znaleziono konwersacji"
+  "no_conversations_found": "Nie znaleziono konwersacji",
+  "success": "Sukces",
+  "error": "Błąd"
 }

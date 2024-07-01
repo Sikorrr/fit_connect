@@ -7,44 +7,71 @@ import 'package:injectable/injectable.dart';
 
 import '../../../../constants/style_guide.dart';
 
-enum DialogType { success, error, info }
+abstract class Dialog {
+  IconData get icon;
+  Color get backgroundColor;
+  String get buttonText;
+
+  String getTitle();
+}
+
+class SuccessDialog implements Dialog {
+  @override
+  IconData get icon => Icons.check_circle;
+
+  @override
+  Color get backgroundColor => Colors.green;
+
+  @override
+  String get buttonText => 'continue'.tr().toUpperCase();
+
+  @override
+  String getTitle() => 'success'.tr();
+}
+
+class ErrorDialog implements Dialog {
+  @override
+  IconData get icon => Icons.error;
+
+  @override
+  Color get backgroundColor => Colors.red;
+
+  @override
+  String get buttonText => 'try_again'.tr().toUpperCase();
+
+  @override
+  String getTitle() => 'error'.tr();
+}
+
+class InfoDialog implements Dialog {
+  @override
+  IconData get icon => Icons.info;
+
+  @override
+  Color get backgroundColor => Colors.amber;
+
+  @override
+  String get buttonText => 'OK';
+
+  @override
+  String getTitle() => 'Info';
+}
 
 @singleton
 class DialogManager {
   void showAppDialog(
-      BuildContext context, String title, String message, DialogType type,
+      BuildContext context, String title, String message, Dialog dialogType,
       {String? secondaryButtonText,
       VoidCallback? onPrimaryPressed,
       VoidCallback? onSecondaryPressed}) {
-    IconData icon;
-    Color backgroundColor;
-    String buttonText;
-
-    switch (type) {
-      case DialogType.success:
-        icon = Icons.check_circle;
-        backgroundColor = Colors.green;
-        buttonText = 'continue'.tr().toUpperCase();
-        break;
-      case DialogType.error:
-        icon = Icons.error;
-        backgroundColor = Colors.red;
-        buttonText = 'try_again'.tr().toUpperCase();
-        break;
-      case DialogType.info:
-        icon = Icons.info;
-        backgroundColor = Colors.amber;
-        buttonText = 'OK';
-        break;
-    }
-
     showDialog(
       context: context,
       builder: (BuildContext dialogContext) {
         return AlertDialog(
           shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(Sizes.defaultRadius)),
-          title: Icon(icon, size: Sizes.p48, color: backgroundColor),
+          title: Icon(dialogType.icon,
+              size: Sizes.p48, color: dialogType.backgroundColor),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
@@ -55,10 +82,10 @@ class DialogManager {
               ),
               const Gap(Sizes.p12),
               CustomButton(
-                  color: backgroundColor,
+                  color: dialogType.backgroundColor,
                   onPressed: onPrimaryPressed ??
                       () => Navigator.of(dialogContext).pop(),
-                  label: buttonText),
+                  label: dialogType.buttonText),
               const Gap(Sizes.p12),
               if (secondaryButtonText != null && onSecondaryPressed != null)
                 LinkedText(

@@ -2,6 +2,7 @@ import 'package:injectable/injectable.dart';
 
 import '../../../../../features/navigation/data/routes/router.dart';
 import '../../../../core/api/response.dart';
+import '../../../../core/api/result_status.dart';
 import '../../../auth/domain/repositories/auth_repository.dart';
 
 @singleton
@@ -33,8 +34,12 @@ class DeepLinkHandler {
   }
 
   Future<String?> _handleVerifyEmail(String code) async {
-    await authRepository.applyActionCode(code);
-    return Routes.home.path;
+    final  Response response = await authRepository.applyActionCode(code);
+    if (response.result == ResultStatus.success) {
+      return Routes.home.path;
+    }   else {
+    return "${Routes.error.path}/${response.message}";
+    }
   }
 
   Future<String?> _handleResetPassword(String code) async {

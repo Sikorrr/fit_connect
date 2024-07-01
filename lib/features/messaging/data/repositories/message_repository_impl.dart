@@ -1,48 +1,39 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:easy_localization/easy_localization.dart';
-import 'package:fit_connect/features/messaging/domain/repositories/message_repository.dart';
 import 'package:injectable/injectable.dart';
 
-import '../../../../constants/constants.dart';
 import '../../../../core/api/response.dart';
 import '../../../../core/api/result_status.dart';
-import '../../../../core/dependency_injection/dependency_injection.dart';
 import '../../../../core/error/error_manager.dart';
 import '../../../shared/data/models/user.dart';
+import '../../domain/repositories/message_repository.dart';
+import '../datasources/remote/message_remote_data_source.dart';
 import '../models/conversation.dart';
 import '../models/message.dart';
 
 @LazySingleton(as: MessageRepository)
 class MessageRepositoryImpl implements MessageRepository {
-  final FirebaseFirestore _firestore;
+  final MessageRemoteDataSource _remoteDataSource;
   final ErrorManager _errorManager;
 
-  MessageRepositoryImpl(
-    @Named(firebaseFirestoreInstance) this._firestore,
-    this._errorManager,
-  );
+  MessageRepositoryImpl(this._remoteDataSource, this._errorManager);
 
   @override
   Future<Response<void>> sendMessage(
       String conversationId, Message message, List<User> participants) async {
     try {
-      final conversationDoc = _firestore
-          .collection(FirestoreConstants.conversationsCollection)
-          .doc(conversationId);
-      final conversationSnapshot = await conversationDoc.get();
+      final conversationExists =
+          await _remoteDataSource.conversationExists(conversationId);
 
-      if (!conversationSnapshot.exists) {
+      if (!conversationExists) {
         final newConversation = Conversation(
           id: conversationId,
           messages: [message],
           participantIds: participants.map((user) => user.id).toList(),
         );
-        await conversationDoc.set(newConversation.toJson());
+        await _remoteDataSource.createConversation(
+            conversationId, newConversation);
       } else {
-        await conversationDoc.update({
-          FirestoreConstants.messagesField:
-              FieldValue.arrayUnion([message.toJson()])
-        });
+        await _remoteDataSource.updateConversationMessages(
+            conversationId, message);
       }
       return Response(ResultStatus.success);
     } catch (e, s) {
@@ -52,45 +43,46 @@ class MessageRepositoryImpl implements MessageRepository {
 
   @override
   Stream<List<Conversation>> getAllConversations(String? userId) {
-    return _firestore
-        .collection(FirestoreConstants.conversationsCollection)
-        .where(FirestoreConstants.participantIdsField, arrayContains: userId)
-        .snapshots()
-        .handleError((e, s) =>
-            _handleStreamException('failed_to_fetch_conversations', e: e, s: s))
-        .asyncMap((snapshot) async {
-      try {
-        return Future.wait(snapshot.docs.map((doc) async {
-          final data = doc.data();
-          Conversation conversation = Conversation.fromJson(data);
-          return conversation;
-        }).toList());
-      } catch (e, s) {
-        throw Exception('failed_to_fetch_conversations'.tr());
-      }
-    });
+    return _remoteDataSource.getAllConversations(userId).handleError((e, s) =>
+        _handleStreamException('failed_to_fetch_conversations', e: e, s: s));
   }
 
   @override
   Stream<Conversation> fetchConversation(String conversationId) {
-    final conversationDoc = _firestore
-        .collection(FirestoreConstants.conversationsCollection)
-        .doc(conversationId);
+    return _remoteDataSource.fetchConversation(conversationId).handleError(
+        (e, s) =>
+            _handleStreamException('failed_to_fetch_conversation', e: e, s: s));
+  }
 
-    return conversationDoc.snapshots().asyncMap((snapshot) async {
-      if (!snapshot.exists) {
-        throw Exception('conversation_not_found'.tr());
-      }
+  @override
+  Future<void> createConversation(
+      String conversationId, Conversation conversation) async {
+    try {
+      await _remoteDataSource.createConversation(conversationId, conversation);
+    } catch (e, s) {
+      _handleException('failed_to_create_conversation', e: e, s: s);
+    }
+  }
 
-      try {
-        final data = snapshot.data()!;
-        Conversation conversation = Conversation.fromJson(data);
-        return conversation;
-      } catch (e, s) {
-        throw Exception('failed_to_fetch_conversation'.tr());
-      }
-    }).handleError((e, s) =>
-        _handleStreamException('failed_to_fetch_conversation', e: e, s: s));
+  @override
+  Future<void> updateConversationMessages(
+      String conversationId, Message message) async {
+    try {
+      await _remoteDataSource.updateConversationMessages(
+          conversationId, message);
+    } catch (e, s) {
+      _handleException('failed_to_update_conversation_messages', e: e, s: s);
+    }
+  }
+
+  @override
+  Future<bool> conversationExists(String conversationId) async {
+    try {
+      return await _remoteDataSource.conversationExists(conversationId);
+    } catch (e, s) {
+      _handleException('failed_to_check_conversation_exists', e: e, s: s);
+      return false;
+    }
   }
 
   Response<T> _handleException<T>(String message, {Object? e, StackTrace? s}) {

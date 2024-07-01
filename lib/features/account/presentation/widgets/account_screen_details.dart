@@ -6,7 +6,6 @@ import 'package:fit_connect/features/account/presentation/widgets/text_input_wid
 import 'package:fit_connect/features/shared/domain/entities/gender.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 
 import '../../../../constants/constants.dart';
 import '../../../../utils/validator.dart';
@@ -102,7 +101,7 @@ class AccountScreenDetails extends StatelessWidget {
               isEditing: true,
               initialSelectedItem: user.gender,
               displayNames:
-              Gender.values.map((value) => value.displayName).toList(),
+                  Gender.values.map((value) => value.displayName).toList(),
               onItemSelected: (newValue) {
                 context.read<UserDataBloc>().add(UpdateGender(newValue));
                 Navigator.of(context, rootNavigator: true).pop();
@@ -186,7 +185,7 @@ class AccountScreenDetails extends StatelessWidget {
               isEditing: true,
               initialSelectedItems: user.preferredGenderOfWorkoutPartner,
               displayNames:
-              Gender.values.map((value) => value.displayName).toList(),
+                  Gender.values.map((value) => value.displayName).toList(),
               onSelected: (newValue) {
                 context
                     .read<UserDataBloc>()
@@ -199,7 +198,7 @@ class AccountScreenDetails extends StatelessWidget {
         AccountInfoTile(
           title: 'age_range_preference'.tr(),
           value:
-          '${user.ageRangePreference.start.round()} - ${user.ageRangePreference.end.round()}',
+              '${user.ageRangePreference.start.round()} - ${user.ageRangePreference.end.round()}',
           onPressed: () => _showDialog(
             context,
             RangeSelector(
@@ -239,4 +238,3 @@ class AccountScreenDetails extends StatelessWidget {
     );
   }
 }
-

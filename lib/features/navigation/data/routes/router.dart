@@ -51,7 +51,7 @@ class AppRoute {
 
   static final router = GoRouter(
     initialLocation: Routes.home.path,
-    debugLogDiagnostics: true,
+    debugLogDiagnostics: false,
     redirect: (context, state) async {
       final appState = getIt<AppState>();
       final isLoggedIn = appState.isLoggedIn;
@@ -64,14 +64,11 @@ class AppRoute {
         return deeplinkPath;
       }
 
-      if (isLoggedIn
-          // && appState.isEmailVerified
-          &&
-          path == Routes.auth.path) {
+      if (isLoggedIn && appState.isEmailVerified && path == Routes.auth.path) {
         Response<bool> response =
-        await userRepository.hasCompletedOnboarding(appState.user?.id);
+            await userRepository.hasCompletedOnboarding(appState.user?.id);
         bool hasCompletedOnboarding =
-        response.result == ResultStatus.success ? response.data! : false;
+            response.result == ResultStatus.success ? response.data! : false;
 
         if (!hasCompletedOnboarding) {
           return Routes.onboarding.path;
@@ -137,12 +134,12 @@ class AppRoute {
           GoRoute(
             path: Routes.home.path,
             pageBuilder: (context, state) =>
-            const NoTransitionPage(child: HomeScreen()),
+                const NoTransitionPage(child: HomeScreen()),
           ),
           GoRoute(
               path: Routes.explore.path,
-              pageBuilder: (context, state) => const NoTransitionPage(
-                  child: ExploreScreen()),
+              pageBuilder: (context, state) =>
+                  const NoTransitionPage(child: ExploreScreen()),
               routes: [
                 GoRoute(
                   path: Routes.userDetails.path,
@@ -155,17 +152,17 @@ class AppRoute {
           GoRoute(
               path: Routes.messages.path,
               pageBuilder: (context, state) => const NoTransitionPage(
-                child: MessagingScreen(),
-              ),
+                    child: MessagingScreen(),
+                  ),
               routes: [
                 GoRoute(
                     path: Routes.directMessage.path,
                     builder: (context, state) {
                       final args = state.extra as Map<String, dynamic>;
                       final user =
-                      args[NavigationConstants.userKey] as customUser.User;
+                          args[NavigationConstants.userKey] as customUser.User;
                       final Conversation? conversation =
-                      args[NavigationConstants.conversationKey];
+                          args[NavigationConstants.conversationKey];
                       return DirectMessageScreen(
                           otherUser: user, conversation: conversation);
                     }),
@@ -173,8 +170,8 @@ class AppRoute {
           GoRoute(
               path: Routes.account.path,
               pageBuilder: (context, state) => const NoTransitionPage(
-                child: AccountScreen(),
-              ),
+                    child: AccountScreen(),
+                  ),
               routes: [
                 GoRoute(
                   path: Routes.accountInfo.path,
@@ -186,7 +183,7 @@ class AppRoute {
           GoRoute(
             path: Routes.workoutSessions.path,
             pageBuilder: (context, state) =>
-            const NoTransitionPage(child: AllWorkoutSessionsScreen()),
+                const NoTransitionPage(child: AllWorkoutSessionsScreen()),
           ),
         ],
       ),
@@ -199,4 +196,3 @@ class AppRoute {
     return protectedRoutes.contains(path);
   }
 }
-
